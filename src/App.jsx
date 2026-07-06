@@ -42,7 +42,6 @@ const DEFAULTS = {
   workLocation: 'Noida Office',
   employmentType: 'Internship',
   workMode: 'Remote',
-  roleTemplate: 'software',
   rolesResponsibilities: 'During this {employmentType}, you will work on software development systems under the guidance of our engineering team. You will be expected to write clean, maintainable code, participate in team syncs, and adhere to project timelines and deliverables.'
 };
 
@@ -81,34 +80,10 @@ function App() {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    if (name === 'roleTemplate') {
-      let designation = '';
-      let department = '';
-      let rolesResponsibilities = '';
-      
-      if (value === 'software') {
-        designation = 'MERN Stack Developer';
-        department = 'Software Development';
-        rolesResponsibilities = 'During this {employmentType}, you will work on software development systems under the guidance of our engineering team. You will be expected to write clean, maintainable code, participate in team syncs, and adhere to project timelines and deliverables.';
-      } else if (value === 'hr') {
-        designation = 'HR Recruiter Intern';
-        department = 'Human Resources';
-        rolesResponsibilities = 'During this {employmentType}, you will work on talent acquisition and human resource operations under the guidance of our HR team. You will be expected to screen resumes, coordinate interviews, assist in onboarding, manage employee engagement, and support daily HR administrative tasks.';
-      }
-      
-      setFormData(prev => ({
-        ...prev,
-        roleTemplate: value,
-        designation,
-        department,
-        rolesResponsibilities
-      }));
-    } else {
-      setFormData(prev => ({
-        ...prev,
-        [name]: value
-      }));
-    }
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
   };
 
   const resetForm = () => {
@@ -578,20 +553,6 @@ function App() {
                 paddingBottom: '0.25rem'
               }}>
                 <User size={16} /> Candidate Details
-              </div>
-
-              <div className="form-group">
-                <label htmlFor="roleTemplate">Role Template</label>
-                <select 
-                  id="roleTemplate" 
-                  name="roleTemplate"
-                  value={formData.roleTemplate}
-                  onChange={handleInputChange}
-                  className="input-field"
-                >
-                  <option value="software">Software Development</option>
-                  <option value="hr">Human Resources (HR)</option>
-                </select>
               </div>
 
               <div className="form-group">

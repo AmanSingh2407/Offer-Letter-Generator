@@ -12,7 +12,8 @@ import {
   Clock, 
   ShieldCheck, 
   Globe, 
-  FileSignature 
+  FileSignature,
+  Lock
 } from 'lucide-react';
 import html2canvas from 'html2canvas';
 import { jsPDF } from 'jspdf';
@@ -40,7 +41,9 @@ const DEFAULTS = {
   signatureText: 'Kartik Khare',
   workLocation: 'Noida Office',
   employmentType: 'Internship',
-  workMode: 'Remote'
+  workMode: 'Remote',
+  roleTemplate: 'software',
+  rolesResponsibilities: 'During this {employmentType}, you will work on software development systems under the guidance of our engineering team. You will be expected to write clean, maintainable code, participate in team syncs, and adhere to project timelines and deliverables.'
 };
 
 function App() {
@@ -48,6 +51,13 @@ function App() {
   const [theme, setTheme] = useState('light');
   const [isGenerating, setIsGenerating] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+
+  // Access protection authentication states
+  const [isAuthenticated, setIsAuthenticated] = useState(() => {
+    return sessionStorage.getItem('auth_code') === '24072026';
+  });
+  const [passcode, setPasscode] = useState('');
+  const [authError, setAuthError] = useState('');
 
   // Synchronize theme with HTML attribute
   useEffect(() => {
@@ -58,12 +68,47 @@ function App() {
     setTheme(prev => prev === 'light' ? 'dark' : 'light');
   };
 
+  const handleLogin = (e) => {
+    e.preventDefault();
+    if (passcode === '24072026') {
+      sessionStorage.setItem('auth_code', '24072026');
+      setIsAuthenticated(true);
+      setAuthError('');
+    } else {
+      setAuthError('Access Denied. Invalid Passcode.');
+    }
+  };
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
+    if (name === 'roleTemplate') {
+      let designation = '';
+      let department = '';
+      let rolesResponsibilities = '';
+      
+      if (value === 'software') {
+        designation = 'MERN Stack Developer';
+        department = 'Software Development';
+        rolesResponsibilities = 'During this {employmentType}, you will work on software development systems under the guidance of our engineering team. You will be expected to write clean, maintainable code, participate in team syncs, and adhere to project timelines and deliverables.';
+      } else if (value === 'hr') {
+        designation = 'HR Recruiter Intern';
+        department = 'Human Resources';
+        rolesResponsibilities = 'During this {employmentType}, you will work on talent acquisition and human resource operations under the guidance of our HR team. You will be expected to screen resumes, coordinate interviews, assist in onboarding, manage employee engagement, and support daily HR administrative tasks.';
+      }
+      
+      setFormData(prev => ({
+        ...prev,
+        roleTemplate: value,
+        designation,
+        department,
+        rolesResponsibilities
+      }));
+    } else {
+      setFormData(prev => ({
+        ...prev,
+        [name]: value
+      }));
+    }
   };
 
   const resetForm = () => {
@@ -314,8 +359,8 @@ function App() {
             <h3 style={{ fontSize: '1rem', color: '#0f172a', marginBottom: '0.35rem', fontFamily: 'var(--font-heading)' }}>
               1. Roles and Responsibilities
             </h3>
-            <p style={{ margin: 0, fontSize: '0.92rem', color: '#334155' }}>
-              During this {formData.employmentType?.toLowerCase() || 'internship'}, you will work on software development systems under the guidance of our engineering team. You will be expected to write clean, maintainable code, participate in team syncs, and adhere to project timelines and deliverables.
+            <p style={{ margin: 0, fontSize: '0.92rem', color: '#334155', whiteSpace: 'pre-wrap' }}>
+              {(formData.rolesResponsibilities || '').replace('{employmentType}', formData.employmentType?.toLowerCase() || 'internship')}
             </p>
           </div>
 
@@ -390,6 +435,63 @@ function App() {
       </>
     );
   };
+
+  if (!isAuthenticated) {
+    return (
+      <div className="auth-container">
+        <div style={{ position: 'absolute', top: '1.5rem', right: '1.5rem', zIndex: 10 }}>
+          <button className="theme-toggle-btn" onClick={toggleTheme} title="Toggle Theme" style={{ backgroundColor: 'var(--bg-card)', border: '1px solid var(--border-color)', boxShadow: 'var(--shadow-sm)' }}>
+            {theme === 'light' ? <Moon size={20} /> : <Sun size={20} />}
+          </button>
+        </div>
+        
+        <div className="auth-card">
+          <div className="auth-header">
+            <img src={companyLogo} className="auth-logo" alt={formData.companyName} />
+            <div className="auth-title">Mind Manthan</div>
+            <div className="auth-subtitle">
+              Please enter the 8-digit access code to unlock the Offer & Joining Letter Generator.
+            </div>
+          </div>
+          
+          <form onSubmit={handleLogin} className="auth-form">
+            <div className="passcode-input-wrapper">
+              <span className="input-icon-left">
+                <Lock size={18} />
+              </span>
+              <input
+                type="password"
+                className="passcode-input"
+                placeholder="Enter passcode"
+                value={passcode}
+                onChange={(e) => {
+                  setPasscode(e.target.value);
+                  if (authError) setAuthError('');
+                }}
+                maxLength={16}
+                autoFocus
+                required
+              />
+            </div>
+            
+            {authError && (
+              <div className="auth-error">
+                <span>{authError}</span>
+              </div>
+            )}
+            
+            <button type="submit" className="btn btn-primary" style={{ width: '100%', padding: '0.85rem' }}>
+              Unlock Generator
+            </button>
+          </form>
+          
+          <div className="auth-footer">
+            {formData.companyName} &copy; {new Date().getFullYear()}
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', flexGrow: 1 }}>
@@ -479,6 +581,20 @@ function App() {
               </div>
 
               <div className="form-group">
+                <label htmlFor="roleTemplate">Role Template</label>
+                <select 
+                  id="roleTemplate" 
+                  name="roleTemplate"
+                  value={formData.roleTemplate}
+                  onChange={handleInputChange}
+                  className="input-field"
+                >
+                  <option value="software">Software Development</option>
+                  <option value="hr">Human Resources (HR)</option>
+                </select>
+              </div>
+
+              <div className="form-group">
                 <label htmlFor="candidateName">Full Name</label>
                 <input 
                   type="text" 
@@ -529,6 +645,23 @@ function App() {
                   placeholder="Software Development"
                   className="input-field"
                 />
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="rolesResponsibilities">Roles & Responsibilities</label>
+                <textarea 
+                  id="rolesResponsibilities" 
+                  name="rolesResponsibilities"
+                  value={formData.rolesResponsibilities}
+                  onChange={handleInputChange}
+                  placeholder="Enter role and responsibilities..."
+                  className="input-field"
+                  rows={4}
+                  style={{ resize: 'vertical', minHeight: '80px', fontSize: '0.85rem', lineHeight: '1.4' }}
+                />
+                <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>
+                  Use <code>{`{employmentType}`}</code> as a placeholder for the contract type (e.g. internship).
+                </span>
               </div>
             </div>
 

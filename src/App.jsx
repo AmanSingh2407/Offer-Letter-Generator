@@ -272,6 +272,37 @@ function App() {
     }
   };
 
+  // NDA Clause Handlers
+  const handleAddNdaClause = (part = 1) => {
+    const newClauseText = prompt(`Enter text for new Clause in Part ${part}:`, 'New Legal Clause');
+    if (!newClauseText || !newClauseText.trim()) return;
+    const key = part === 1 ? 'ndaPart1Clauses' : 'ndaPart2Clauses';
+    setFormData(prev => ({
+      ...prev,
+      [key]: [...(prev[key] || []), newClauseText.trim()]
+    }));
+    showToast(`📜 Added new clause to Part ${part}`, 'success');
+  };
+
+  const handleEditNdaClause = (part = 1, index, newText) => {
+    const key = part === 1 ? 'ndaPart1Clauses' : 'ndaPart2Clauses';
+    setFormData(prev => {
+      const list = [...(prev[key] || [])];
+      list[index] = newText;
+      return { ...prev, [key]: list };
+    });
+  };
+
+  const handleDeleteNdaClause = (part = 1, index) => {
+    const key = part === 1 ? 'ndaPart1Clauses' : 'ndaPart2Clauses';
+    setFormData(prev => {
+      const list = [...(prev[key] || [])];
+      list.splice(index, 1);
+      return { ...prev, [key]: list };
+    });
+    showToast(`🗑️ Clause removed from Part ${part}`, 'success');
+  };
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => {
@@ -1284,109 +1315,85 @@ function App() {
                   </div>
                 </div>
 
-                {/* NDA Part I Clauses (Page 1) */}
+                {/* NDA Part I Clauses Manager (Page 1) */}
                 <div style={{ marginTop: '0.75rem', paddingTop: '0.5rem', borderTop: '1px dashed var(--border-color)' }}>
-                  <div style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--primary-500)', marginBottom: '0.5rem' }}>
-                    📜 Part I Clauses (Page 1)
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
+                    <span style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--primary-500)' }}>
+                      📜 Part I Clauses (Page 1)
+                    </span>
+                    <button 
+                      type="button" 
+                      onClick={() => handleAddNdaClause(1)}
+                      style={{ padding: '0.2rem 0.5rem', fontSize: '0.7rem', backgroundColor: 'var(--primary-500)', color: '#fff', border: 'none', borderRadius: '4px', cursor: 'pointer', fontWeight: 600 }}
+                    >
+                      + Add Clause (Part I)
+                    </button>
                   </div>
                   
-                  <div className="form-group">
-                    <label htmlFor="ndaClause1">Clause 1: Definition of Confidential Information</label>
-                    <textarea 
-                      id="ndaClause1" 
-                      name="ndaClause1" 
-                      value={formData.ndaClause1 || ''} 
-                      onChange={handleInputChange} 
-                      className="input-field" 
-                      rows={2} 
-                      style={{ fontSize: '0.8rem', resize: 'vertical' }}
-                    />
-                  </div>
-
-                  <div className="form-group">
-                    <label htmlFor="ndaClause2">Clause 2: Non-Disclosure Duty</label>
-                    <textarea 
-                      id="ndaClause2" 
-                      name="ndaClause2" 
-                      value={formData.ndaClause2 || ''} 
-                      onChange={handleInputChange} 
-                      className="input-field" 
-                      rows={2} 
-                      style={{ fontSize: '0.8rem', resize: 'vertical' }}
-                    />
-                  </div>
-
-                  <div className="form-group">
-                    <label htmlFor="ndaClause3">Clause 3: Restricted Use</label>
-                    <textarea 
-                      id="ndaClause3" 
-                      name="ndaClause3" 
-                      value={formData.ndaClause3 || ''} 
-                      onChange={handleInputChange} 
-                      className="input-field" 
-                      rows={2} 
-                      style={{ fontSize: '0.8rem', resize: 'vertical' }}
-                    />
-                  </div>
+                  {(formData.ndaPart1Clauses || []).map((clause, idx) => (
+                    <div key={idx} className="form-group" style={{ marginBottom: '0.5rem' }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2px' }}>
+                        <label style={{ fontSize: '0.72rem', fontWeight: 600 }}>Clause {idx + 1}</label>
+                        <button 
+                          type="button" 
+                          onClick={() => handleDeleteNdaClause(1, idx)}
+                          style={{ background: 'none', border: 'none', color: '#ef4444', cursor: 'pointer', fontSize: '0.7rem' }}
+                          title="Delete Clause"
+                        >
+                          ✕ Delete
+                        </button>
+                      </div>
+                      <textarea 
+                        value={clause} 
+                        onChange={(e) => handleEditNdaClause(1, idx, e.target.value)} 
+                        className="input-field" 
+                        rows={2} 
+                        style={{ fontSize: '0.8rem', resize: 'vertical' }}
+                      />
+                    </div>
+                  ))}
                 </div>
 
-                {/* NDA Part II Clauses (Page 2) */}
+                {/* NDA Part II Clauses Manager (Page 2) */}
                 <div style={{ marginTop: '0.75rem', paddingTop: '0.5rem', borderTop: '1px dashed var(--border-color)' }}>
-                  <div style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--primary-500)', marginBottom: '0.5rem' }}>
-                    📜 Part II Clauses (Page 2)
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
+                    <span style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--primary-500)' }}>
+                      📜 Part II Clauses (Page 2)
+                    </span>
+                    <button 
+                      type="button" 
+                      onClick={() => handleAddNdaClause(2)}
+                      style={{ padding: '0.2rem 0.5rem', fontSize: '0.7rem', backgroundColor: '#8b5cf6', color: '#fff', border: 'none', borderRadius: '4px', cursor: 'pointer', fontWeight: 600 }}
+                    >
+                      + Add Clause (Part II)
+                    </button>
                   </div>
 
-                  <div className="form-group">
-                    <label htmlFor="ndaClause4">Clause 4: Exclusions from Confidentiality</label>
-                    <textarea 
-                      id="ndaClause4" 
-                      name="ndaClause4" 
-                      value={formData.ndaClause4 || ''} 
-                      onChange={handleInputChange} 
-                      className="input-field" 
-                      rows={2} 
-                      style={{ fontSize: '0.8rem', resize: 'vertical' }}
-                    />
-                  </div>
-
-                  <div className="form-group">
-                    <label htmlFor="ndaClause5">Clause 5: Intellectual Property Ownership</label>
-                    <textarea 
-                      id="ndaClause5" 
-                      name="ndaClause5" 
-                      value={formData.ndaClause5 || ''} 
-                      onChange={handleInputChange} 
-                      className="input-field" 
-                      rows={2} 
-                      style={{ fontSize: '0.8rem', resize: 'vertical' }}
-                    />
-                  </div>
-
-                  <div className="form-group">
-                    <label htmlFor="ndaClause6">Clause 6: Return of Materials &amp; Remedies</label>
-                    <textarea 
-                      id="ndaClause6" 
-                      name="ndaClause6" 
-                      value={formData.ndaClause6 || ''} 
-                      onChange={handleInputChange} 
-                      className="input-field" 
-                      rows={2} 
-                      style={{ fontSize: '0.8rem', resize: 'vertical' }}
-                    />
-                  </div>
-
-                  <div className="form-group">
-                    <label htmlFor="ndaClause7">Clause 7: Governing Law &amp; Jurisdiction</label>
-                    <textarea 
-                      id="ndaClause7" 
-                      name="ndaClause7" 
-                      value={formData.ndaClause7 || ''} 
-                      onChange={handleInputChange} 
-                      className="input-field" 
-                      rows={2} 
-                      style={{ fontSize: '0.8rem', resize: 'vertical' }}
-                    />
-                  </div>
+                  {(formData.ndaPart2Clauses || []).map((clause, idx) => {
+                    const clauseNum = (formData.ndaPart1Clauses ? formData.ndaPart1Clauses.length : 3) + idx + 1;
+                    return (
+                      <div key={idx} className="form-group" style={{ marginBottom: '0.5rem' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2px' }}>
+                          <label style={{ fontSize: '0.72rem', fontWeight: 600 }}>Clause {clauseNum}</label>
+                          <button 
+                            type="button" 
+                            onClick={() => handleDeleteNdaClause(2, idx)}
+                            style={{ background: 'none', border: 'none', color: '#ef4444', cursor: 'pointer', fontSize: '0.7rem' }}
+                            title="Delete Clause"
+                          >
+                            ✕ Delete
+                          </button>
+                        </div>
+                        <textarea 
+                          value={clause} 
+                          onChange={(e) => handleEditNdaClause(2, idx, e.target.value)} 
+                          className="input-field" 
+                          rows={2} 
+                          style={{ fontSize: '0.8rem', resize: 'vertical' }}
+                        />
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
             )}

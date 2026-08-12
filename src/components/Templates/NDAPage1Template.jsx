@@ -158,18 +158,19 @@ export const NDAPage1Template = ({ formData }) => {
       <div className="terms-section-modern">
         <div className="terms-title-modern">KEY OBLIGATIONS &amp; CLAUSES (PART I)</div>
         <ul className="terms-list-modern">
-          <li className="terms-item-modern">
-            <Check size={12} className="terms-check-icon" />
-            <span><strong>1. Definition of Confidential Information:</strong> {replacePlaceholders(formData.ndaClause1 || 'Includes all technical data, source code, designs, algorithms, financial records, client lists, business strategies, and trade secrets disclosed orally or in writing.', formData)}</span>
-          </li>
-          <li className="terms-item-modern">
-            <Check size={12} className="terms-check-icon" />
-            <span><strong>2. Non-Disclosure Duty:</strong> {replacePlaceholders(formData.ndaClause2 || 'Receiving Party agrees to hold all Confidential Information in strict confidence and shall not copy, reproduce, or disclose it to any third party without prior written consent.', formData)}</span>
-          </li>
-          <li className="terms-item-modern">
-            <Check size={12} className="terms-check-icon" />
-            <span><strong>3. Restricted Use:</strong> {replacePlaceholders(formData.ndaClause3 || 'Receiving Party shall use Confidential Information solely for the authorized purpose of their professional engagement with Disclosing Party and for no other commercial benefit.', formData)}</span>
-          </li>
+          {(formData.ndaPart1Clauses && formData.ndaPart1Clauses.length > 0 ? formData.ndaPart1Clauses : [
+            "Definition of Confidential Information: Includes all technical data, source code, designs, algorithms, financial records, client lists, business strategies, and trade secrets disclosed orally or in writing.",
+            "Non-Disclosure Duty: Receiving Party agrees to hold all Confidential Information in strict confidence and shall not copy, reproduce, or disclose it to any third party without prior written consent.",
+            "Restricted Use: Receiving Party shall use Confidential Information solely for the authorized purpose of their professional engagement with Disclosing Party and for no other commercial benefit."
+          ]).map((clause, idx) => (
+            <li key={idx} className="terms-item-modern">
+              <Check size={12} className="terms-check-icon" />
+              <span>
+                <strong>{idx + 1}. </strong>
+                {replacePlaceholders(clause, formData)}
+              </span>
+            </li>
+          ))}
         </ul>
       </div>
 

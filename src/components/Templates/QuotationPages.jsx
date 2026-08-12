@@ -192,9 +192,45 @@ export const QuotationPages = ({ formData, isPrintableContainer = false }) => {
           </table>
 
           {isLastPage && (
-            <div style={{ padding: '10px 14px', background: '#fcfaff', borderTop: '1px solid #e2d9f3', fontSize: '11px' }}>
-              <strong>Amount in Words:</strong> {numberToWords(amount)}
-            </div>
+            <>
+              <div style={{ padding: '10px 14px', background: '#fcfaff', borderTop: '1px solid #e2d9f3', fontSize: '11px' }}>
+                <strong>Amount in Words:</strong> {numberToWords(amount)}
+              </div>
+
+              {/* Authorised Signatory Block */}
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', marginTop: '1.2rem', paddingRight: '1rem' }}>
+                {formData.quotationSignatureImg ? (
+                  <img 
+                    src={formData.quotationSignatureImg} 
+                    alt="Authorised Signatory" 
+                    style={{ maxHeight: '60px', maxWidth: '160px', objectFit: 'contain', marginBottom: '4px' }} 
+                    crossOrigin="anonymous"
+                  />
+                ) : (
+                  <div style={{
+                    fontFamily: "'Dancing Script', cursive",
+                    fontSize: '1.6rem',
+                    fontWeight: '700',
+                    color: '#0f172a',
+                    marginBottom: '4px',
+                    borderBottom: '1px solid #cbd5e1',
+                    paddingBottom: '2px',
+                    minWidth: '130px',
+                    textAlign: 'center'
+                  }}>
+                    {formData.signatureText || 'Kartik'}
+                  </div>
+                )}
+                <div style={{ fontSize: '11px', color: '#475569', fontWeight: '600' }}>
+                  Authorised Signatory
+                </div>
+              </div>
+
+              {/* Enquiry Contact Strip */}
+              <div style={{ textAlign: 'center', fontSize: '11px', color: '#334155', marginTop: '1.2rem', marginBottom: '0.4rem' }}>
+                For any enquiry, reach out via email at <strong>{formData.quotationEmail || 'info.mindmanthan@gmail.com'}</strong>, call on <strong>{formData.quotationMobile || '+91 79993 76526'}</strong>
+              </div>
+            </>
           )}
         </div>
 

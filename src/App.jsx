@@ -1272,6 +1272,52 @@ function App() {
                   </div>
                 </div>
 
+                <div className="form-group">
+                  <label htmlFor="signatureText">Signatory Name (Cursive Font)</label>
+                  <input 
+                    type="text" 
+                    id="signatureText" 
+                    name="signatureText"
+                    value={formData.signatureText || ''}
+                    onChange={handleInputChange}
+                    placeholder="Kartik"
+                    className="input-field"
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="quotationSignatureImg">Upload Signature Image (Optional)</label>
+                  <input 
+                    type="file" 
+                    accept="image/*"
+                    onChange={(e) => {
+                      const file = e.target.files[0];
+                      if (file) {
+                        const reader = new FileReader();
+                        reader.onloadend = () => {
+                          setFormData(prev => ({ ...prev, quotationSignatureImg: reader.result }));
+                          showToast('✍️ Signature image uploaded!', 'success');
+                        };
+                        reader.readAsDataURL(file);
+                      }
+                    }}
+                    className="input-field"
+                    style={{ fontSize: '0.8rem', padding: '0.35rem' }}
+                  />
+                  {formData.quotationSignatureImg && (
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginTop: '0.3rem' }}>
+                      <span style={{ fontSize: '0.72rem', color: '#10b981', fontWeight: 600 }}>✓ Signature Image Active</span>
+                      <button 
+                        type="button" 
+                        onClick={() => setFormData(prev => ({ ...prev, quotationSignatureImg: null }))}
+                        style={{ fontSize: '0.68rem', color: '#ef4444', background: 'none', border: 'none', cursor: 'pointer' }}
+                      >
+                        Remove
+                      </button>
+                    </div>
+                  )}
+                </div>
+
                 <QuotationManager 
                   quotationScopeText={formData.quotationScopeText}
                   handleAddScopeItem={handleAddScopeItem}

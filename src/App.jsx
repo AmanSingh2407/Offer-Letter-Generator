@@ -1216,6 +1216,32 @@ function App() {
 
                 <div className="input-row">
                   <div className="form-group">
+                    <label htmlFor="quotationDate">Quotation Date</label>
+                    <input 
+                      type="date" 
+                      id="quotationDate" 
+                      name="quotationDate"
+                      value={formData.quotationDate || ''}
+                      onChange={handleInputChange}
+                      className="input-field"
+                    />
+                  </div>
+
+                  <div className="form-group">
+                    <label htmlFor="validTillDate">Valid Till Date</label>
+                    <input 
+                      type="date" 
+                      id="validTillDate" 
+                      name="validTillDate"
+                      value={formData.validTillDate || ''}
+                      onChange={handleInputChange}
+                      className="input-field"
+                    />
+                  </div>
+                </div>
+
+                <div className="input-row">
+                  <div className="form-group">
                     <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center' }}>
                       <label htmlFor="quotationNo">Quotation No #</label>
                       <UniquenessAlert 

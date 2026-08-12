@@ -323,6 +323,8 @@ function App() {
           updated.quotationItemCode = 'Hellobite028';
           updated.quotationQuantity = '1';
           updated.quotationRate = '20000';
+          updated.quotationMobile = '+91 92772 67732';
+          updated.quotationEmail = 'info@mindmanthansoftwaresolutions.com';
         } else if (value === 'Salary Slip') {
           updated.candidateName = 'Aman Singh';
           updated.employeeId = '43521';
@@ -1267,6 +1269,34 @@ function App() {
                       name="quotationRate"
                       value={formData.quotationRate}
                       onChange={handleInputChange}
+                      className="input-field"
+                    />
+                  </div>
+                </div>
+
+                <div className="input-row">
+                  <div className="form-group">
+                    <label htmlFor="quotationMobile">Enquiry Mobile Number</label>
+                    <input 
+                      type="text" 
+                      id="quotationMobile" 
+                      name="quotationMobile"
+                      value={formData.quotationMobile || ''}
+                      onChange={handleInputChange}
+                      placeholder="+91 92772 67732"
+                      className="input-field"
+                    />
+                  </div>
+
+                  <div className="form-group">
+                    <label htmlFor="quotationEmail">Enquiry Email ID</label>
+                    <input 
+                      type="email" 
+                      id="quotationEmail" 
+                      name="quotationEmail"
+                      value={formData.quotationEmail || ''}
+                      onChange={handleInputChange}
+                      placeholder="info@mindmanthansoftwaresolutions.com"
                       className="input-field"
                     />
                   </div>

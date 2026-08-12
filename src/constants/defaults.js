@@ -102,7 +102,7 @@ export const DEFAULTS = {
   quotationNo: 'A000029',
   quotationDate: '2026-07-29',
   validTillDate: '2026-08-08',
-  quotationMobile: '+91 70115 02461',
+  quotationMobile: '+91 92772 67732',
   quotationEmail: 'Info.mindmanthan@gmail.com',
   quotationProjectTitle: 'Hellobites',
   quotationProjectSub: 'Admin Panel, Website, Product Listing with SEO, Database, web Deployment, E-mail configuration',

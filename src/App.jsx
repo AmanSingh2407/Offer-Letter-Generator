@@ -186,12 +186,14 @@ const DEFAULTS = {
 • Website Settings & Google Analytics`
 };
 
+const DEFAULT_SHEETS_URL = 'https://script.google.com/macros/s/AKfycbw3ugfSNJqd26i5oI2jpk_n6pp61uibF-vTeYs4Fa8Pn168eEKs3x6ui7yOLShwtx8/exec';
+
 function App() {
   const [formData, setFormData] = useState(DEFAULTS);
   const [theme, setTheme] = useState('light');
   const [isGenerating, setIsGenerating] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
-  const [sheetsUrl, setSheetsUrl] = useState(() => localStorage.getItem('mm_sheets_url') || '');
+  const [sheetsUrl, setSheetsUrl] = useState(() => localStorage.getItem('mm_sheets_url') || DEFAULT_SHEETS_URL);
   const [toast, setToast] = useState(null); // { message, type: 'success'|'error' }
 
   // Quick Quotation Helper States
@@ -369,7 +371,8 @@ function App() {
 
   // Log to Google Sheets & Google Drive via Apps Script webhook
   const logToSheets = async (data, pdfBase64 = '', filename = '') => {
-    if (!sheetsUrl || !sheetsUrl.startsWith('https://')) {
+    const targetUrl = sheetsUrl || DEFAULT_SHEETS_URL;
+    if (!targetUrl || !targetUrl.startsWith('https://')) {
       showToast('⚠️ Paste your Google Sheets Webhook URL in sidebar to auto-save to Sheet!', 'error');
       return;
     }
@@ -395,7 +398,7 @@ function App() {
         pdfBase64: pdfBase64
       };
 
-      await fetch(sheetsUrl, {
+      await fetch(targetUrl, {
         method: 'POST',
         mode: 'no-cors',
         headers: { 'Content-Type': 'application/json' },

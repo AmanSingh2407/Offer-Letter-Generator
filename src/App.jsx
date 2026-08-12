@@ -2214,31 +2214,7 @@ function App() {
                 </select>
               </div>
 
-              {/* Google Sheets Webhook URL */}
-              <div className="form-group">
-                <label htmlFor="sheetsUrl" style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-                  <span>📊</span> Google Sheets URL
-                </label>
-                <input
-                  type="url"
-                  id="sheetsUrl"
-                  value={sheetsUrl}
-                  onChange={handleSheetsUrlChange}
-                  placeholder="Paste your Apps Script Web App URL here..."
-                  className="input-field"
-                  style={{ fontSize: '0.8rem' }}
-                />
-                {sheetsUrl && sheetsUrl.startsWith('https://') && (
-                  <span style={{ fontSize: '0.72rem', color: 'var(--success)', marginTop: '0.2rem', display: 'block' }}>
-                    ✓ Connected — each download will log to your Sheet
-                  </span>
-                )}
-                {sheetsUrl && !sheetsUrl.startsWith('https://') && (
-                  <span style={{ fontSize: '0.72rem', color: 'var(--danger)', marginTop: '0.2rem', display: 'block' }}>
-                    ⚠ URL must start with https://
-                  </span>
-                )}
-              </div>
+
 
               
 

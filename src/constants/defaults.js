@@ -98,6 +98,12 @@ export const DEFAULTS = {
   ndaDuration: '2 Years Post Termination',
   ndaJurisdiction: 'Noida, Uttar Pradesh',
   ndaPurpose: 'WHEREAS, Disclosing Party and Receiving Party wish to explore or engage in business discussions, employment, or project collaboration during which Disclosing Party may disclose confidential, proprietary, and technical information to Receiving Party.',
+  // Termination Letter default parameters
+  terminationLastDay: '2026-08-31',
+  terminationNoticeStatus: '30 Days Notice Served',
+  terminationReason: 'End of Fixed-Term Contract',
+  terminationIntro: 'This letter serves as formal notification that your employment with {companyName} as {designation} will terminate effective on {terminationLastDay}. We appreciate your contributions during your tenure with us and wish to ensure a smooth transition process.',
+  terminationClosing: 'We thank you for your service with {companyName} and wish you success in your future professional endeavors.',
   // Quotation Default parameters
   quotationNo: 'A000029',
   quotationDate: '2026-07-29',

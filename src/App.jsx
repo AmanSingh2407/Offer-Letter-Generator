@@ -388,8 +388,8 @@ function App() {
         issueDate: isQuot ? (data.quotationDate || '') : (data.issueDate || ''),
         startDate: isQuot ? (data.validTillDate || '') : isPPO ? (data.ppoJoiningDate || '') : (data.startDate || ''),
         companyName: isQuot ? (data.quotationFromCompany || '') : (data.companyName || ''),
-        refNumber: isQuot ? (data.quotationNo || '') : isPay ? `PAY-${data.employeeId || ''}-${data.payPeriod || ''}` : (data.refNumber || ''),
-        certificateNo: isCert ? (data.certificateId || '') : isQuot ? (data.quotationNo || '') : (data.refNumber || ''),
+        refNumber: isCert ? 'N/A' : isQuot ? (data.quotationNo || 'N/A') : isPay ? `PAY-${data.employeeId || ''}-${data.payPeriod || ''}` : (data.refNumber || 'N/A'),
+        certificateNo: isCert ? (data.certificateId || 'N/A') : 'N/A',
         timestamp: new Date().toLocaleString('en-IN'),
         filename: filename,
         pdfBase64: pdfBase64

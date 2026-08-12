@@ -16,7 +16,7 @@ import {
   Award 
 } from 'lucide-react';
 import companyLogo from '../../assets/logo.png';
-import { formatDateLong, capitalizeName } from '../../utils/formatters';
+import { formatDateLong, capitalizeName, replacePlaceholders } from '../../utils/formatters';
 
 export const NDAPage1Template = ({ formData }) => {
   const formattedIssueDate = formatDateLong(formData.issueDate);

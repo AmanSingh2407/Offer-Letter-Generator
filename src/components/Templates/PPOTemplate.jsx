@@ -45,7 +45,7 @@ export const PPOTemplate = ({ formData }) => {
           <div className="contact-item"><MapPin size={10} className="contact-icon" /><span>{formData.companyAddress}</span></div>
           <div className="contact-item"><Globe size={10} className="contact-icon" /><span>{formData.companyWebsite}</span></div>
           <div className="contact-item"><Mail size={10} className="contact-icon" /><span>info@mindmanthansoftwaresolutions.com</span></div>
-          <div className="contact-item"><Phone size={10} className="contact-icon" /><span>+91 98765 43210</span></div>
+          <div className="contact-item"><Phone size={10} className="contact-icon" /><span>{formData.companyMobile || '+91 92772 67732'}</span></div>
         </div>
       </div>
 

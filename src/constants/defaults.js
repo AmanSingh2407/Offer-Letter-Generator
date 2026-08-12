@@ -20,6 +20,7 @@ export const DEFAULTS = {
   companyName: 'Mind Manthan Software Solutions',
   companyTagline: 'Innovate. Build. Elevate.',
   companyAddress: 'A90, Sector 4, Noida, Uttar Pradesh, 201301',
+  companyMobile: '+91 92772 67732',
   refNumber: 'MMSS/HR/OL/2025/1478',
   signatureText: 'Aman Singh',
   workLocation: 'Noida, Uttar Pradesh',

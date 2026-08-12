@@ -143,7 +143,7 @@ export const CertTemplate = ({ formData }) => {
         </div>
         <div className="cert-bottom-item">
           <Phone size={9} className="contact-icon" />
-          <span>{formData.companyMobile || '+91 98765 43210'}</span>
+          <span>{formData.companyMobile || '+91 92772 67732'}</span>
         </div>
         <div className="cert-bottom-item">
           <Mail size={9} className="contact-icon" />

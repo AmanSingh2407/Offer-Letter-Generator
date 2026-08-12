@@ -62,7 +62,7 @@ export const Page1Template = ({ formData }) => {
           </div>
           <div className="contact-item">
             <Phone size={10} className="contact-icon" />
-            <span>+91 98765 43210</span>
+            <span>{formData.companyMobile || '+91 92772 67732'}</span>
           </div>
         </div>
       </div>

@@ -158,16 +158,12 @@ export const NDAPage1Template = ({ formData }) => {
       <div className="terms-section-modern">
         <div className="terms-title-modern">KEY OBLIGATIONS &amp; CLAUSES (PART I)</div>
         <ul className="terms-list-modern">
-          {(formData.ndaPart1Clauses && formData.ndaPart1Clauses.length > 0 ? formData.ndaPart1Clauses : [
-            "Definition of Confidential Information: Includes all technical data, source code, designs, algorithms, financial records, client lists, business strategies, and trade secrets disclosed orally or in writing.",
-            "Non-Disclosure Duty: Receiving Party agrees to hold all Confidential Information in strict confidence and shall not copy, reproduce, or disclose it to any third party without prior written consent.",
-            "Restricted Use: Receiving Party shall use Confidential Information solely for the authorized purpose of their professional engagement with Disclosing Party and for no other commercial benefit."
-          ]).map((clause, idx) => (
+          {(formData.ndaPart1Clauses || []).map((clause, idx) => (
             <li key={idx} className="terms-item-modern">
               <Check size={12} className="terms-check-icon" />
               <span>
-                <strong>{idx + 1}. </strong>
-                {replacePlaceholders(clause, formData)}
+                <strong>{clause.title || `Clause ${idx + 1}`}:</strong>{' '}
+                {replacePlaceholders(clause.content || '', formData)}
               </span>
             </li>
           ))}

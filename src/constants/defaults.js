@@ -99,15 +99,15 @@ export const DEFAULTS = {
   ndaJurisdiction: 'Noida, Uttar Pradesh',
   ndaPurpose: 'WHEREAS, Disclosing Party and Receiving Party wish to explore or engage in business discussions, employment, or project collaboration during which Disclosing Party may disclose confidential, proprietary, and technical information to Receiving Party.',
   ndaPart1Clauses: [
-    "Definition of Confidential Information: Includes all technical data, source code, designs, algorithms, financial records, client lists, business strategies, and trade secrets disclosed orally or in writing.",
-    "Non-Disclosure Duty: Receiving Party agrees to hold all Confidential Information in strict confidence and shall not copy, reproduce, or disclose it to any third party without prior written consent.",
-    "Restricted Use: Receiving Party shall use Confidential Information solely for the authorized purpose of their professional engagement with Disclosing Party and for no other commercial benefit."
+    { title: '1. Definition of Confidential Information', content: 'Includes all technical data, source code, designs, algorithms, financial records, client lists, business strategies, and trade secrets disclosed orally or in writing.' },
+    { title: '2. Non-Disclosure Duty', content: 'Receiving Party agrees to hold all Confidential Information in strict confidence and shall not copy, reproduce, or disclose it to any third party without prior written consent.' },
+    { title: '3. Restricted Use', content: 'Receiving Party shall use Confidential Information solely for the authorized purpose of their professional engagement with Disclosing Party and for no other commercial benefit.' }
   ],
   ndaPart2Clauses: [
-    "Exclusions from Confidentiality: Confidential Information does not include information that: (a) is or becomes publicly known through no breach of Receiving Party; (b) was already in Receiving Party's lawful possession prior to disclosure; or (c) is required to be disclosed by applicable legal court order.",
-    "Intellectual Property Ownership: Nothing in this Agreement grants Receiving Party any license, patent, copyright, or intellectual property rights over Disclosing Party's software, databases, or trade secrets. All IP created or disclosed remains sole property of {companyName}.",
-    "Return of Materials & Remedies: Upon written request or termination of association, Receiving Party shall immediately return or destroy all physical and electronic copies of Confidential Information. Unauthorized disclosure will cause irreparable harm, entitling Disclosing Party to seek immediate injunctive relief and damages.",
-    "Governing Law & Jurisdiction: This Agreement shall be governed by and construed in accordance with the laws of India. Any disputes arising hereunder shall be subject to the exclusive jurisdiction of the courts situated at {ndaJurisdiction}."
+    { title: '4. Exclusions from Confidentiality', content: 'Confidential Information does not include information that: (a) is or becomes publicly known through no breach of Receiving Party; (b) was already in Receiving Party\'s lawful possession prior to disclosure; or (c) is required to be disclosed by applicable legal court order.' },
+    { title: '5. Intellectual Property Ownership', content: 'Nothing in this Agreement grants Receiving Party any license, patent, copyright, or intellectual property rights over Disclosing Party\'s software, databases, or trade secrets. All IP created or disclosed remains sole property of {companyName}.' },
+    { title: '6. Return of Materials & Injunctive Remedies', content: 'Upon written request or termination of association, Receiving Party shall immediately return or destroy all physical and electronic copies of Confidential Information. Unauthorized disclosure will cause irreparable harm, entitling Disclosing Party to seek immediate injunctive relief and damages.' },
+    { title: '7. Governing Law & Jurisdiction', content: 'This Agreement shall be governed by and construed in accordance with the laws of India. Any disputes arising hereunder shall be subject to the exclusive jurisdiction of the courts situated at {ndaJurisdiction}.' }
   ],
   // Termination Letter default parameters
   terminationLastDay: '2026-08-31',

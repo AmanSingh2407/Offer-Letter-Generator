@@ -1350,6 +1350,7 @@ function App() {
 
                 <QuotationManager 
                   quotationScopeText={formData.quotationScopeText}
+                  onScopeTextChange={(val) => setFormData(prev => ({ ...prev, quotationScopeText: val }))}
                   handleAddScopeItem={handleAddScopeItem}
                   handleAddSection={handleAddSection}
                   handleAddPageBreak={handleAddPageBreak}

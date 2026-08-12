@@ -98,6 +98,13 @@ export const DEFAULTS = {
   ndaDuration: '2 Years Post Termination',
   ndaJurisdiction: 'Noida, Uttar Pradesh',
   ndaPurpose: 'WHEREAS, Disclosing Party and Receiving Party wish to explore or engage in business discussions, employment, or project collaboration during which Disclosing Party may disclose confidential, proprietary, and technical information to Receiving Party.',
+  ndaClause1: 'Includes all technical data, source code, designs, algorithms, financial records, client lists, business strategies, and trade secrets disclosed orally or in writing.',
+  ndaClause2: 'Receiving Party agrees to hold all Confidential Information in strict confidence and shall not copy, reproduce, or disclose it to any third party without prior written consent.',
+  ndaClause3: 'Receiving Party shall use Confidential Information solely for the authorized purpose of their professional engagement with Disclosing Party and for no other commercial benefit.',
+  ndaClause4: 'Confidential Information does not include information that: (a) is or becomes publicly known through no breach of Receiving Party; (b) was already in Receiving Party\'s lawful possession prior to disclosure; or (c) is required to be disclosed by applicable legal court order.',
+  ndaClause5: 'Nothing in this Agreement grants Receiving Party any license, patent, copyright, or intellectual property rights over Disclosing Party\'s software, databases, or trade secrets. All IP created or disclosed remains sole property of {companyName}.',
+  ndaClause6: 'Upon written request or termination of association, Receiving Party shall immediately return or destroy all physical and electronic copies of Confidential Information. Unauthorized disclosure will cause irreparable harm, entitling Disclosing Party to seek immediate injunctive relief and damages.',
+  ndaClause7: 'This Agreement shall be governed by and construed in accordance with the laws of India. Any disputes arising hereunder shall be subject to the exclusive jurisdiction of the courts situated at {ndaJurisdiction}.',
   // Termination Letter default parameters
   terminationLastDay: '2026-08-31',
   terminationNoticeStatus: '30 Days Notice Served',

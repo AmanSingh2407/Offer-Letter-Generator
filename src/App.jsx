@@ -1283,6 +1283,111 @@ function App() {
                     />
                   </div>
                 </div>
+
+                {/* NDA Part I Clauses (Page 1) */}
+                <div style={{ marginTop: '0.75rem', paddingTop: '0.5rem', borderTop: '1px dashed var(--border-color)' }}>
+                  <div style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--primary-500)', marginBottom: '0.5rem' }}>
+                    📜 Part I Clauses (Page 1)
+                  </div>
+                  
+                  <div className="form-group">
+                    <label htmlFor="ndaClause1">Clause 1: Definition of Confidential Information</label>
+                    <textarea 
+                      id="ndaClause1" 
+                      name="ndaClause1" 
+                      value={formData.ndaClause1 || ''} 
+                      onChange={handleInputChange} 
+                      className="input-field" 
+                      rows={2} 
+                      style={{ fontSize: '0.8rem', resize: 'vertical' }}
+                    />
+                  </div>
+
+                  <div className="form-group">
+                    <label htmlFor="ndaClause2">Clause 2: Non-Disclosure Duty</label>
+                    <textarea 
+                      id="ndaClause2" 
+                      name="ndaClause2" 
+                      value={formData.ndaClause2 || ''} 
+                      onChange={handleInputChange} 
+                      className="input-field" 
+                      rows={2} 
+                      style={{ fontSize: '0.8rem', resize: 'vertical' }}
+                    />
+                  </div>
+
+                  <div className="form-group">
+                    <label htmlFor="ndaClause3">Clause 3: Restricted Use</label>
+                    <textarea 
+                      id="ndaClause3" 
+                      name="ndaClause3" 
+                      value={formData.ndaClause3 || ''} 
+                      onChange={handleInputChange} 
+                      className="input-field" 
+                      rows={2} 
+                      style={{ fontSize: '0.8rem', resize: 'vertical' }}
+                    />
+                  </div>
+                </div>
+
+                {/* NDA Part II Clauses (Page 2) */}
+                <div style={{ marginTop: '0.75rem', paddingTop: '0.5rem', borderTop: '1px dashed var(--border-color)' }}>
+                  <div style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--primary-500)', marginBottom: '0.5rem' }}>
+                    📜 Part II Clauses (Page 2)
+                  </div>
+
+                  <div className="form-group">
+                    <label htmlFor="ndaClause4">Clause 4: Exclusions from Confidentiality</label>
+                    <textarea 
+                      id="ndaClause4" 
+                      name="ndaClause4" 
+                      value={formData.ndaClause4 || ''} 
+                      onChange={handleInputChange} 
+                      className="input-field" 
+                      rows={2} 
+                      style={{ fontSize: '0.8rem', resize: 'vertical' }}
+                    />
+                  </div>
+
+                  <div className="form-group">
+                    <label htmlFor="ndaClause5">Clause 5: Intellectual Property Ownership</label>
+                    <textarea 
+                      id="ndaClause5" 
+                      name="ndaClause5" 
+                      value={formData.ndaClause5 || ''} 
+                      onChange={handleInputChange} 
+                      className="input-field" 
+                      rows={2} 
+                      style={{ fontSize: '0.8rem', resize: 'vertical' }}
+                    />
+                  </div>
+
+                  <div className="form-group">
+                    <label htmlFor="ndaClause6">Clause 6: Return of Materials &amp; Remedies</label>
+                    <textarea 
+                      id="ndaClause6" 
+                      name="ndaClause6" 
+                      value={formData.ndaClause6 || ''} 
+                      onChange={handleInputChange} 
+                      className="input-field" 
+                      rows={2} 
+                      style={{ fontSize: '0.8rem', resize: 'vertical' }}
+                    />
+                  </div>
+
+                  <div className="form-group">
+                    <label htmlFor="ndaClause7">Clause 7: Governing Law &amp; Jurisdiction</label>
+                    <textarea 
+                      id="ndaClause7" 
+                      name="ndaClause7" 
+                      value={formData.ndaClause7 || ''} 
+                      onChange={handleInputChange} 
+                      className="input-field" 
+                      rows={2} 
+                      style={{ fontSize: '0.8rem', resize: 'vertical' }}
+                    />
+                  </div>
+                </div>
               </div>
             )}
 

@@ -1,7 +1,7 @@
 import React from 'react';
 import { MapPin, Globe, Mail, Phone, Lightbulb, Shield, Users, Award, Check } from 'lucide-react';
 import companyLogo from '../../assets/logo.png';
-import { capitalizeName } from '../../utils/formatters';
+import { capitalizeName, replacePlaceholders } from '../../utils/formatters';
 
 export const NDAPage2Template = ({ formData }) => {
   return (
@@ -61,7 +61,7 @@ export const NDAPage2Template = ({ formData }) => {
             4. Exclusions from Confidentiality
           </h3>
           <p style={{ margin: 0, fontSize: '0.74rem', color: '#475569', lineHeight: '1.35' }}>
-            Confidential Information does not include information that: (a) is or becomes publicly known through no breach of Receiving Party; (b) was already in Receiving Party's lawful possession prior to disclosure; or (c) is required to be disclosed by applicable legal court order.
+            {replacePlaceholders(formData.ndaClause4 || 'Confidential Information does not include information that: (a) is or becomes publicly known through no breach of Receiving Party; (b) was already in Receiving Party\'s lawful possession prior to disclosure; or (c) is required to be disclosed by applicable legal court order.', formData)}
           </p>
         </div>
 
@@ -70,7 +70,7 @@ export const NDAPage2Template = ({ formData }) => {
             5. Intellectual Property Ownership
           </h3>
           <p style={{ margin: 0, fontSize: '0.74rem', color: '#475569', lineHeight: '1.35' }}>
-            Nothing in this Agreement grants Receiving Party any license, patent, copyright, or intellectual property rights over Disclosing Party's software, databases, or trade secrets. All IP created or disclosed remains sole property of <strong>{formData.companyName}</strong>.
+            {replacePlaceholders(formData.ndaClause5 || 'Nothing in this Agreement grants Receiving Party any license, patent, copyright, or intellectual property rights over Disclosing Party\'s software, databases, or trade secrets. All IP created or disclosed remains sole property of {companyName}.', formData)}
           </p>
         </div>
 
@@ -79,7 +79,7 @@ export const NDAPage2Template = ({ formData }) => {
             6. Return of Materials &amp; Injunctive Remedies
           </h3>
           <p style={{ margin: 0, fontSize: '0.74rem', color: '#475569', lineHeight: '1.35' }}>
-            Upon written request or termination of association, Receiving Party shall immediately return or destroy all physical and electronic copies of Confidential Information. Unauthorized disclosure will cause irreparable harm, entitling Disclosing Party to seek immediate injunctive relief and damages.
+            {replacePlaceholders(formData.ndaClause6 || 'Upon written request or termination of association, Receiving Party shall immediately return or destroy all physical and electronic copies of Confidential Information. Unauthorized disclosure will cause irreparable harm, entitling Disclosing Party to seek immediate injunctive relief and damages.', formData)}
           </p>
         </div>
 
@@ -88,7 +88,7 @@ export const NDAPage2Template = ({ formData }) => {
             7. Governing Law &amp; Jurisdiction
           </h3>
           <p style={{ margin: 0, fontSize: '0.74rem', color: '#475569', lineHeight: '1.35' }}>
-            This Agreement shall be governed by and construed in accordance with the laws of India. Any disputes arising hereunder shall be subject to the exclusive jurisdiction of the courts situated at <strong>{formData.ndaJurisdiction || 'Noida, Uttar Pradesh'}</strong>.
+            {replacePlaceholders(formData.ndaClause7 || 'This Agreement shall be governed by and construed in accordance with the laws of India. Any disputes arising hereunder shall be subject to the exclusive jurisdiction of the courts situated at {ndaJurisdiction}.', formData)}
           </p>
         </div>
 

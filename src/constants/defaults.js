@@ -92,6 +92,12 @@ export const DEFAULTS = {
   incrementEffectiveDate: '2026-04-01',
   incrementIntro: 'In recognition of your exceptional performance, dedication, and invaluable contributions to {companyName}, management is pleased to announce a revision in your compensation package. We appreciate your hard work and commitment toward driving our organizational goals.',
   incrementClosing: 'We look forward to your continued effort, leadership, and dedication toward scaling new heights with {companyName}. Congratulations once again!',
+  // NDA (Non-Disclosure Agreement) default parameters
+  ndaPartyType: 'Employee / Contractor',
+  ndaEffectiveDate: '2026-08-12',
+  ndaDuration: '2 Years Post Termination',
+  ndaJurisdiction: 'Noida, Uttar Pradesh',
+  ndaPurpose: 'WHEREAS, Disclosing Party and Receiving Party wish to explore or engage in business discussions, employment, or project collaboration during which Disclosing Party may disclose confidential, proprietary, and technical information to Receiving Party.',
   // Quotation Default parameters
   quotationNo: 'A000029',
   quotationDate: '2026-07-29',

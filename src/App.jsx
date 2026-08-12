@@ -14,7 +14,7 @@ import {
   Phone,
   Award,
   TrendingUp,
-  Percent
+  Lock
 } from 'lucide-react';
 import html2canvas from 'html2canvas';
 import { jsPDF } from 'jspdf';
@@ -43,6 +43,8 @@ import { CertTemplate } from './components/Templates/CertTemplate';
 import { PayslipTemplate } from './components/Templates/PayslipTemplate';
 import { QuotationPages } from './components/Templates/QuotationPages';
 import { IncrementTemplate } from './components/Templates/IncrementTemplate';
+import { NDAPage1Template } from './components/Templates/NDAPage1Template';
+import { NDAPage2Template } from './components/Templates/NDAPage2Template';
 
 function App() {
   const [formData, setFormData] = useState(DEFAULTS);
@@ -129,8 +131,9 @@ function App() {
   const generateUniqueRefNumber = () => {
     const randomDigits = Math.floor(1000 + Math.random() * 9000);
     const year = new Date().getFullYear();
-    const prefix = formData.letterType === 'PPO Letter' ? 'PPO' : formData.letterType === 'Increment Letter' ? 'INC' : 'OL';
-    const newRef = `MMSS/HR/${prefix}/${year}/${randomDigits}`;
+    const prefix = formData.letterType === 'PPO Letter' ? 'PPO' : formData.letterType === 'Increment Letter' ? 'INC' : formData.letterType === 'NDA Agreement' ? 'NDA' : 'OL';
+    const dept = formData.letterType === 'NDA Agreement' ? 'LEGAL' : 'HR';
+    const newRef = `MMSS/${dept}/${prefix}/${year}/${randomDigits}`;
     setFormData(prev => ({ ...prev, refNumber: newRef }));
     showToast(`⚡ Generated fresh Ref No: ${newRef}`, 'success');
   };
@@ -216,14 +219,15 @@ function App() {
       const isPPO = data.letterType === 'PPO Letter';
       const isCert = data.letterType === 'Internship Certificate';
       const isInc = data.letterType === 'Increment Letter';
+      const isNDA = data.letterType === 'NDA Agreement';
 
       const payload = {
         candidateName: isQuot ? (data.quotationForClient || '') : (data.candidateName || ''),
-        designation: isQuot ? (data.quotationProjectTitle || '') : isPPO ? (data.ppoFullTimeRole || data.designation) : (data.designation || ''),
-        department: isQuot ? 'IT & Web Solutions' : (data.department || ''),
+        designation: isQuot ? (data.quotationProjectTitle || '') : isPPO ? (data.ppoFullTimeRole || data.designation) : isNDA ? `NDA (${data.ndaPartyType || 'Legal'})` : (data.designation || ''),
+        department: isQuot ? 'IT & Web Solutions' : isNDA ? 'Legal & Compliance' : (data.department || ''),
         letterType: data.letterType || 'Offer Letter',
         issueDate: isQuot ? (data.quotationDate || '') : (data.issueDate || ''),
-        startDate: isQuot ? (data.validTillDate || '') : isPPO ? (data.ppoJoiningDate || '') : isInc ? (data.incrementEffectiveDate || '') : (data.startDate || ''),
+        startDate: isQuot ? (data.validTillDate || '') : isPPO ? (data.ppoJoiningDate || '') : isInc ? (data.incrementEffectiveDate || '') : isNDA ? (data.ndaEffectiveDate || '') : (data.startDate || ''),
         companyName: isQuot ? (data.quotationFromCompany || '') : (data.companyName || ''),
         refNumber: isCert ? 'N/A' : isQuot ? (data.quotationNo || 'N/A') : isPay ? `PAY-${data.employeeId || ''}-${data.payPeriod || ''}` : (data.refNumber || 'N/A'),
         certificateNo: isCert ? (data.certificateId || 'N/A') : 'N/A',
@@ -271,7 +275,16 @@ function App() {
         updated.signatureText = value;
       }
       if (name === 'letterType') {
-        if (value === 'Increment Letter') {
+        if (value === 'NDA Agreement') {
+          updated.candidateName = 'Aman Singh';
+          updated.ndaPartyType = 'Employee / Contractor';
+          updated.ndaEffectiveDate = new Date().toISOString().split('T')[0];
+          updated.ndaDuration = '2 Years Post Termination';
+          updated.ndaJurisdiction = 'Noida, Uttar Pradesh';
+          updated.refNumber = `MMSS/LEGAL/NDA/2026/${Math.floor(1000 + Math.random() * 9000)}`;
+          updated.signatoryName = 'Aman Singh';
+          updated.signatoryDesignation = 'HR Manager';
+        } else if (value === 'Increment Letter') {
           updated.candidateName = 'Aman Singh';
           updated.employeeId = '43521';
           updated.designation = 'Software Engineer';
@@ -373,6 +386,7 @@ function App() {
     const isPayslip = formData.letterType === 'Salary Slip';
     const isIncrement = formData.letterType === 'Increment Letter';
     const isPPO = formData.letterType === 'PPO Letter';
+    const isNDA = formData.letterType === 'NDA Agreement';
 
     const nameToCheck = isQuotation ? formData.quotationForClient : formData.candidateName;
     if (!nameToCheck || !nameToCheck.trim()) {
@@ -478,7 +492,7 @@ function App() {
       }
 
       const cleanName = formData.candidateName.trim().replace(/[^a-zA-Z0-9]/g, '_');
-      const docPrefix = isCertificate ? 'Certificate' : isPayslip ? 'Payslip' : isIncrement ? 'IncrementLetter' : isPPO ? 'PPO' : 'Letter';
+      const docPrefix = isCertificate ? 'Certificate' : isPayslip ? 'Payslip' : isIncrement ? 'IncrementLetter' : isNDA ? 'NDA_Agreement' : isPPO ? 'PPO' : 'Letter';
       const filename = `${docPrefix}_MindManthan_${cleanName}.pdf`;
       const pdfBase64 = pdf.output('datauristring');
       pdf.save(filename);
@@ -518,6 +532,7 @@ function App() {
   const isQuotation = formData.letterType === 'Quotation';
   const isPPO = formData.letterType === 'PPO Letter';
   const isIncrement = formData.letterType === 'Increment Letter';
+  const isNDA = formData.letterType === 'NDA Agreement';
 
   const isRefDuplicate = formData.refNumber && registeredRecords.some(r => r.trim().toLowerCase() === formData.refNumber.trim().toLowerCase());
   const isCertDuplicate = formData.certificateId && registeredRecords.some(r => r.trim().toLowerCase() === formData.certificateId.trim().toLowerCase());
@@ -568,6 +583,7 @@ function App() {
                 <option value="Offer Letter">Offer Letter</option>
                 <option value="Joining Letter">Joining Letter</option>
                 <option value="Increment Letter">Increment Letter (Salary Revision)</option>
+                <option value="NDA Agreement">NDA Agreement (Non-Disclosure)</option>
                 <option value="PPO Letter">PPO Letter (Pre-Placement Offer)</option>
                 <option value="Internship Certificate">Internship Certificate</option>
                 <option value="Salary Slip">Salary Slip (Payslip)</option>
@@ -588,7 +604,7 @@ function App() {
                 borderBottom: '1px solid var(--border-color)',
                 paddingBottom: '0.25rem'
               }}>
-                <User size={16} /> {isQuotation ? 'Client Information' : 'Candidate / Employee Details'}
+                <User size={16} /> {isQuotation ? 'Client Information' : isNDA ? 'Receiving Party Details' : 'Candidate / Employee Details'}
               </div>
 
               {isQuotation ? (
@@ -622,7 +638,7 @@ function App() {
               ) : (
                 <>
                   <div className="form-group">
-                    <label htmlFor="candidateName">Employee / Candidate Full Name</label>
+                    <label htmlFor="candidateName">{isNDA ? 'Receiving Party / Counterparty Name' : 'Employee / Candidate Full Name'}</label>
                     <input 
                       type="text" 
                       id="candidateName" 
@@ -699,7 +715,7 @@ function App() {
             </div>
 
             {/* Section 2: Position & Offer Details */}
-            {!isQuotation && !isIncrement && (
+            {!isQuotation && !isIncrement && !isNDA && (
               <div>
                 <div style={{
                   display: 'flex',
@@ -846,6 +862,118 @@ function App() {
                     </div>
                   </>
                 )}
+              </div>
+            )}
+
+            {/* Section 2.3: NDA Specific Form Fields */}
+            {isNDA && (
+              <div>
+                <div style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.5rem',
+                  fontSize: '0.9rem',
+                  fontWeight: '700',
+                  marginBottom: '0.75rem',
+                  color: 'var(--primary-500)',
+                  borderBottom: '1px solid var(--border-color)',
+                  paddingBottom: '0.25rem'
+                }}>
+                  <Lock size={16} /> NDA Legal Parameters
+                </div>
+
+                <div className="input-row">
+                  <div className="form-group">
+                    <label htmlFor="ndaPartyType">Receiving Party Role</label>
+                    <select 
+                      id="ndaPartyType" 
+                      name="ndaPartyType"
+                      value={formData.ndaPartyType}
+                      onChange={handleInputChange}
+                      className="input-field"
+                    >
+                      <option value="Employee / Contractor">Employee / Contractor</option>
+                      <option value="Intern / Trainee">Intern / Trainee</option>
+                      <option value="Client / Vendor">Client / Vendor</option>
+                      <option value="Business Partner">Business Partner</option>
+                    </select>
+                  </div>
+
+                  <div className="form-group">
+                    <label htmlFor="ndaEffectiveDate">Effective Date</label>
+                    <input 
+                      type="date" 
+                      id="ndaEffectiveDate" 
+                      name="ndaEffectiveDate"
+                      value={formData.ndaEffectiveDate}
+                      onChange={handleInputChange}
+                      className="input-field"
+                    />
+                  </div>
+                </div>
+
+                <div className="input-row">
+                  <div className="form-group">
+                    <label htmlFor="ndaDuration">Confidentiality Term</label>
+                    <input 
+                      type="text" 
+                      id="ndaDuration" 
+                      name="ndaDuration"
+                      value={formData.ndaDuration}
+                      onChange={handleInputChange}
+                      placeholder="2 Years Post Termination"
+                      className="input-field"
+                    />
+                  </div>
+
+                  <div className="form-group">
+                    <label htmlFor="ndaJurisdiction">Jurisdiction</label>
+                    <input 
+                      type="text" 
+                      id="ndaJurisdiction" 
+                      name="ndaJurisdiction"
+                      value={formData.ndaJurisdiction}
+                      onChange={handleInputChange}
+                      placeholder="Noida, Uttar Pradesh"
+                      className="input-field"
+                    />
+                  </div>
+                </div>
+
+                <div className="input-row">
+                  <div className="form-group">
+                    <label htmlFor="issueDate">Issue Date</label>
+                    <input 
+                      type="date" 
+                      id="issueDate" 
+                      name="issueDate"
+                      value={formData.issueDate}
+                      onChange={handleInputChange}
+                      className="input-field"
+                    />
+                  </div>
+
+                  <div className="form-group">
+                    <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center' }}>
+                      <label htmlFor="refNumber">Agreement Ref No</label>
+                      <UniquenessAlert 
+                        fieldName="Agreement Ref"
+                        isDuplicate={isRefDuplicate}
+                        value={formData.refNumber}
+                        onGenerateUnique={generateUniqueRefNumber}
+                      />
+                    </div>
+                    <input 
+                      type="text" 
+                      id="refNumber" 
+                      name="refNumber"
+                      value={formData.refNumber}
+                      onChange={handleInputChange}
+                      placeholder="MMSS/LEGAL/NDA/2026/0812"
+                      className="input-field"
+                    />
+                  </div>
+                </div>
               </div>
             )}
 
@@ -1172,7 +1300,7 @@ function App() {
                   <ShieldCheck size={16} /> Reference &amp; Signatory
                 </div>
 
-                {!isCertificate && !isIncrement && (
+                {!isCertificate && !isIncrement && !isNDA && (
                   <div className="input-row">
                     <div className="form-group">
                       <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center' }}>
@@ -1277,6 +1405,15 @@ function App() {
               <div className="paper-page">
                 <IncrementTemplate formData={formData} />
               </div>
+            ) : isNDA ? (
+              <>
+                <div className="paper-page">
+                  <NDAPage1Template formData={formData} />
+                </div>
+                <div className="paper-page">
+                  <NDAPage2Template formData={formData} />
+                </div>
+              </>
             ) : isPPO ? (
               <div className="paper-page ppo">
                 <PPOTemplate formData={formData} />
@@ -1309,6 +1446,15 @@ function App() {
               <div id="printable-page-1" className="paper-page">
                 <IncrementTemplate formData={formData} />
               </div>
+            ) : isNDA ? (
+              <>
+                <div id="printable-page-1" className="paper-page">
+                  <NDAPage1Template formData={formData} />
+                </div>
+                <div id="printable-page-2" className="paper-page">
+                  <NDAPage2Template formData={formData} />
+                </div>
+              </>
             ) : isPPO ? (
               <div id="printable-page-1" className="paper-page ppo">
                 <PPOTemplate formData={formData} />

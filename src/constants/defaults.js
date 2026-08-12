@@ -104,6 +104,11 @@ export const DEFAULTS = {
   terminationReason: 'End of Fixed-Term Contract',
   terminationIntro: 'This letter serves as formal notification that your employment with {companyName} as {designation} will terminate effective on {terminationLastDay}. We appreciate your contributions during your tenure with us and wish to ensure a smooth transition process.',
   terminationClosing: 'We thank you for your service with {companyName} and wish you success in your future professional endeavors.',
+  // Employee Award Certificate default parameters
+  awardType: 'EMPLOYEE OF THE MONTH',
+  awardPeriod: 'August 2026',
+  awardCitation: 'In recognition of outstanding performance, exceptional dedication, and remarkable contributions toward achieving organizational excellence at Mind Manthan Software Solutions.',
+  secondarySignatoryName: 'Managing Director',
   // Quotation Default parameters
   quotationNo: 'A000029',
   quotationDate: '2026-07-29',

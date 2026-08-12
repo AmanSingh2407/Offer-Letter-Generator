@@ -15,7 +15,9 @@ import {
   Award,
   TrendingUp,
   Lock,
-  UserX
+  UserX,
+  Trophy,
+  Star
 } from 'lucide-react';
 import html2canvas from 'html2canvas';
 import { jsPDF } from 'jspdf';
@@ -47,6 +49,7 @@ import { IncrementTemplate } from './components/Templates/IncrementTemplate';
 import { NDAPage1Template } from './components/Templates/NDAPage1Template';
 import { NDAPage2Template } from './components/Templates/NDAPage2Template';
 import { TerminationTemplate } from './components/Templates/TerminationTemplate';
+import { AwardCertTemplate } from './components/Templates/AwardCertTemplate';
 
 function App() {
   const [formData, setFormData] = useState(DEFAULTS);
@@ -143,7 +146,8 @@ function App() {
   const generateUniqueCertificateId = () => {
     const randomDigits = Math.floor(1000 + Math.random() * 9000);
     const year = new Date().getFullYear();
-    const newCert = `MMSS/INT/CERT/${year}/${randomDigits}`;
+    const prefix = formData.letterType === 'Employee Award Certificate' ? 'AWD' : 'INT';
+    const newCert = `MMSS/${prefix}/CERT/${year}/${randomDigits}`;
     setFormData(prev => ({ ...prev, certificateId: newCert }));
     showToast(`⚡ Generated fresh Certificate ID: ${newCert}`, 'success');
   };
@@ -220,20 +224,21 @@ function App() {
       const isPay = data.letterType === 'Salary Slip';
       const isPPO = data.letterType === 'PPO Letter';
       const isCert = data.letterType === 'Internship Certificate';
+      const isAward = data.letterType === 'Employee Award Certificate';
       const isInc = data.letterType === 'Increment Letter';
       const isNDA = data.letterType === 'NDA Agreement';
       const isTrm = data.letterType === 'Termination Letter';
 
       const payload = {
         candidateName: isQuot ? (data.quotationForClient || '') : (data.candidateName || ''),
-        designation: isQuot ? (data.quotationProjectTitle || '') : isPPO ? (data.ppoFullTimeRole || data.designation) : isNDA ? `NDA (${data.ndaPartyType || 'Legal'})` : isTrm ? `${data.designation} (Terminated)` : (data.designation || ''),
+        designation: isQuot ? (data.quotationProjectTitle || '') : isPPO ? (data.ppoFullTimeRole || data.designation) : isNDA ? `NDA (${data.ndaPartyType || 'Legal'})` : isTrm ? `${data.designation} (Terminated)` : isAward ? `${data.awardType || 'Award'} (${data.awardPeriod || ''})` : (data.designation || ''),
         department: isQuot ? 'IT & Web Solutions' : isNDA ? 'Legal & Compliance' : (data.department || ''),
         letterType: data.letterType || 'Offer Letter',
         issueDate: isQuot ? (data.quotationDate || '') : (data.issueDate || ''),
-        startDate: isQuot ? (data.validTillDate || '') : isPPO ? (data.ppoJoiningDate || '') : isInc ? (data.incrementEffectiveDate || '') : isNDA ? (data.ndaEffectiveDate || '') : isTrm ? (data.terminationLastDay || '') : (data.startDate || ''),
+        startDate: isQuot ? (data.validTillDate || '') : isPPO ? (data.ppoJoiningDate || '') : isInc ? (data.incrementEffectiveDate || '') : isNDA ? (data.ndaEffectiveDate || '') : isTrm ? (data.terminationLastDay || '') : isAward ? (data.awardPeriod || '') : (data.startDate || ''),
         companyName: isQuot ? (data.quotationFromCompany || '') : (data.companyName || ''),
-        refNumber: isCert ? 'N/A' : isQuot ? (data.quotationNo || 'N/A') : isPay ? `PAY-${data.employeeId || ''}-${data.payPeriod || ''}` : (data.refNumber || 'N/A'),
-        certificateNo: isCert ? (data.certificateId || 'N/A') : 'N/A',
+        refNumber: (isCert || isAward) ? 'N/A' : isQuot ? (data.quotationNo || 'N/A') : isPay ? `PAY-${data.employeeId || ''}-${data.payPeriod || ''}` : (data.refNumber || 'N/A'),
+        certificateNo: (isCert || isAward) ? (data.certificateId || 'N/A') : 'N/A',
         timestamp: new Date().toLocaleString('en-IN'),
         filename: filename,
         pdfBase64: pdfBase64
@@ -278,7 +283,18 @@ function App() {
         updated.signatureText = value;
       }
       if (name === 'letterType') {
-        if (value === 'Termination Letter') {
+        if (value === 'Employee Award Certificate') {
+          updated.candidateName = 'Aman Singh';
+          updated.designation = 'Senior Software Engineer';
+          updated.department = 'Engineering';
+          updated.awardType = 'EMPLOYEE OF THE MONTH';
+          updated.awardPeriod = 'August 2026';
+          updated.awardCitation = 'In recognition of outstanding performance, exceptional dedication, and remarkable contributions toward achieving organizational excellence at Mind Manthan Software Solutions.';
+          updated.certificateId = `MMSS/AWD/CERT/2026/${Math.floor(1000 + Math.random() * 9000)}`;
+          updated.signatoryName = 'Aman Singh';
+          updated.signatoryDesignation = 'HR Manager';
+          updated.secondarySignatoryName = 'Managing Director';
+        } else if (value === 'Termination Letter') {
           updated.candidateName = 'Aman Singh';
           updated.employeeId = '43521';
           updated.designation = 'Software Engineer';
@@ -399,11 +415,13 @@ function App() {
   const generatePDF = async () => {
     const isQuotation = formData.letterType === 'Quotation';
     const isCertificate = formData.letterType === 'Internship Certificate';
+    const isAward = formData.letterType === 'Employee Award Certificate';
     const isPayslip = formData.letterType === 'Salary Slip';
     const isIncrement = formData.letterType === 'Increment Letter';
     const isPPO = formData.letterType === 'PPO Letter';
     const isNDA = formData.letterType === 'NDA Agreement';
     const isTermination = formData.letterType === 'Termination Letter';
+    const isLandscape = isCertificate || isAward;
 
     const nameToCheck = isQuotation ? formData.quotationForClient : formData.candidateName;
     if (!nameToCheck || !nameToCheck.trim()) {
@@ -412,10 +430,10 @@ function App() {
     }
 
     // Uniqueness Check Guard
-    const currentNum = isCertificate ? formData.certificateId : isQuotation ? formData.quotationNo : formData.refNumber;
+    const currentNum = (isCertificate || isAward) ? formData.certificateId : isQuotation ? formData.quotationNo : formData.refNumber;
     const isAlreadyUsed = currentNum && registeredRecords.some(r => r.trim().toLowerCase() === currentNum.trim().toLowerCase());
     if (isAlreadyUsed) {
-      const proceed = window.confirm(`⚠️ WARNING: ${isCertificate ? 'Certificate ID' : isQuotation ? 'Quotation No' : 'Reference Number'} "${currentNum}" is ALREADY REGISTERED in Google Sheets!\n\nAre you sure you want to download a duplicate?`);
+      const proceed = window.confirm(`⚠️ WARNING: ${(isCertificate || isAward) ? 'Certificate ID' : isQuotation ? 'Quotation No' : 'Reference Number'} "${currentNum}" is ALREADY REGISTERED in Google Sheets!\n\nAre you sure you want to download a duplicate?`);
       if (!proceed) return;
     }
 
@@ -467,13 +485,13 @@ function App() {
         allowTaint: true,
         backgroundColor: '#ffffff',
         logging: false,
-        width: isCertificate ? 1123 : 794,
-        height: isCertificate ? 794 : 1123,
+        width: isLandscape ? 1123 : 794,
+        height: isLandscape ? 794 : 1123,
       });
       const imgData1 = canvas1.toDataURL('image/png');
 
       let imgData2 = null;
-      if (!isCertificate && !isPayslip && !isIncrement && !isPPO && !isTermination) {
+      if (!isLandscape && !isPayslip && !isIncrement && !isPPO && !isTermination) {
         const page2Element = document.getElementById('printable-page-2');
         if (page2Element) {
           const canvas2 = await html2canvas(page2Element, {
@@ -491,31 +509,31 @@ function App() {
 
       // Create PDF in A4 format
       const pdf = new jsPDF({
-        orientation: isCertificate ? 'landscape' : 'portrait',
+        orientation: isLandscape ? 'landscape' : 'portrait',
         unit: 'mm',
         format: 'a4'
       });
 
-      const imgWidth = isCertificate ? 297 : 210;
-      const imgHeight = isCertificate ? 210 : 297;
+      const imgWidth = isLandscape ? 297 : 210;
+      const imgHeight = isLandscape ? 210 : 297;
 
       // Add Page 1
       pdf.addImage(imgData1, 'PNG', 0, 0, imgWidth, imgHeight, undefined, 'FAST');
       
       // Add Page 2
-      if (!isCertificate && !isPayslip && !isIncrement && !isPPO && !isTermination && imgData2) {
+      if (!isLandscape && !isPayslip && !isIncrement && !isPPO && !isTermination && imgData2) {
         pdf.addPage();
         pdf.addImage(imgData2, 'PNG', 0, 0, imgWidth, imgHeight, undefined, 'FAST');
       }
 
       const cleanName = formData.candidateName.trim().replace(/[^a-zA-Z0-9]/g, '_');
-      const docPrefix = isCertificate ? 'Certificate' : isPayslip ? 'Payslip' : isIncrement ? 'IncrementLetter' : isNDA ? 'NDA_Agreement' : isTermination ? 'TerminationLetter' : isPPO ? 'PPO' : 'Letter';
+      const docPrefix = isCertificate ? 'Certificate' : isAward ? 'AwardCertificate' : isPayslip ? 'Payslip' : isIncrement ? 'IncrementLetter' : isNDA ? 'NDA_Agreement' : isTermination ? 'TerminationLetter' : isPPO ? 'PPO' : 'Letter';
       const filename = `${docPrefix}_MindManthan_${cleanName}.pdf`;
       const pdfBase64 = pdf.output('datauristring');
       pdf.save(filename);
 
       // Register used number locally
-      const activeNum = isCertificate ? formData.certificateId : formData.refNumber;
+      const activeNum = (isCertificate || isAward) ? formData.certificateId : formData.refNumber;
       markNumberAsRegistered(activeNum);
 
       // Log to Google Sheets
@@ -545,6 +563,7 @@ function App() {
   }
 
   const isCertificate = formData.letterType === 'Internship Certificate';
+  const isAward = formData.letterType === 'Employee Award Certificate';
   const isPayslip = formData.letterType === 'Salary Slip';
   const isQuotation = formData.letterType === 'Quotation';
   const isPPO = formData.letterType === 'PPO Letter';
@@ -601,6 +620,7 @@ function App() {
                 <option value="Offer Letter">Offer Letter</option>
                 <option value="Joining Letter">Joining Letter</option>
                 <option value="Increment Letter">Increment Letter (Salary Revision)</option>
+                <option value="Employee Award Certificate">Employee Award Certificate (Month/Year)</option>
                 <option value="Termination Letter">Termination Letter (Notice of Separation)</option>
                 <option value="NDA Agreement">NDA Agreement (Non-Disclosure)</option>
                 <option value="PPO Letter">PPO Letter (Pre-Placement Offer)</option>
@@ -623,7 +643,7 @@ function App() {
                 borderBottom: '1px solid var(--border-color)',
                 paddingBottom: '0.25rem'
               }}>
-                <User size={16} /> {isQuotation ? 'Client Information' : isNDA ? 'Receiving Party Details' : 'Candidate / Employee Details'}
+                <User size={16} /> {isQuotation ? 'Client Information' : isNDA ? 'Receiving Party Details' : isAward ? 'Honoree Details' : 'Candidate / Employee Details'}
               </div>
 
               {isQuotation ? (
@@ -657,7 +677,7 @@ function App() {
               ) : (
                 <>
                   <div className="form-group">
-                    <label htmlFor="candidateName">{isNDA ? 'Receiving Party / Counterparty Name' : 'Employee / Candidate Full Name'}</label>
+                    <label htmlFor="candidateName">{isNDA ? 'Receiving Party / Counterparty Name' : isAward ? 'Honoree Employee Full Name' : 'Employee / Candidate Full Name'}</label>
                     <input 
                       type="text" 
                       id="candidateName" 
@@ -669,7 +689,7 @@ function App() {
                     />
                   </div>
 
-                  {(isIncrement || isTermination) && (
+                  {(isIncrement || isTermination || isAward) && (
                     <div className="form-group">
                       <label htmlFor="employeeId">Employee ID</label>
                       <input 
@@ -684,7 +704,7 @@ function App() {
                     </div>
                   )}
 
-                  {!isCertificate && !isPayslip && (
+                  {!isCertificate && !isPayslip && !isAward && (
                     <div className="form-group">
                       <label htmlFor="candidateAddress">Full Address</label>
                       <textarea 
@@ -700,7 +720,7 @@ function App() {
                     </div>
                   )}
 
-                  {!isCertificate && (
+                  {!isCertificate && !isAward && (
                     <div className="input-row">
                       <div className="form-group">
                         <label htmlFor="candidateEmail">Email Address</label>
@@ -733,8 +753,150 @@ function App() {
               )}
             </div>
 
+            {/* Section 2.1: Award Certificate Inputs */}
+            {isAward && (
+              <div>
+                <div style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.5rem',
+                  fontSize: '0.9rem',
+                  fontWeight: '700',
+                  marginBottom: '0.75rem',
+                  color: '#d97706',
+                  borderBottom: '1px solid var(--border-color)',
+                  paddingBottom: '0.25rem'
+                }}>
+                  <Trophy size={16} /> Award &amp; Citation Parameters
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="awardType">Award Category / Title</label>
+                  <select 
+                    id="awardType" 
+                    name="awardType"
+                    value={formData.awardType}
+                    onChange={handleInputChange}
+                    className="input-field"
+                    style={{ fontWeight: 600 }}
+                  >
+                    <option value="EMPLOYEE OF THE MONTH">EMPLOYEE OF THE MONTH</option>
+                    <option value="EMPLOYEE OF THE YEAR">EMPLOYEE OF THE YEAR</option>
+                    <option value="STAR PERFORMER OF THE QUARTER">STAR PERFORMER OF THE QUARTER</option>
+                    <option value="EXCELLENCE IN INNOVATION">EXCELLENCE IN INNOVATION</option>
+                    <option value="LEADERSHIP & DEDICATION AWARD">LEADERSHIP &amp; DEDICATION AWARD</option>
+                  </select>
+                </div>
+
+                <div className="input-row">
+                  <div className="form-group">
+                    <label htmlFor="awardPeriod">Award Month / Period</label>
+                    <input 
+                      type="text" 
+                      id="awardPeriod" 
+                      name="awardPeriod"
+                      value={formData.awardPeriod}
+                      onChange={handleInputChange}
+                      placeholder="e.g. August 2026 or Year 2026"
+                      className="input-field"
+                    />
+                  </div>
+
+                  <div className="form-group">
+                    <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center' }}>
+                      <label htmlFor="certificateId">Certificate ID</label>
+                      <UniquenessAlert 
+                        fieldName="Certificate ID"
+                        isDuplicate={isCertDuplicate}
+                        value={formData.certificateId}
+                        onGenerateUnique={generateUniqueCertificateId}
+                      />
+                    </div>
+                    <input 
+                      type="text" 
+                      id="certificateId" 
+                      name="certificateId"
+                      value={formData.certificateId}
+                      onChange={handleInputChange}
+                      placeholder="MMSS/AWD/CERT/2026/0894"
+                      className="input-field"
+                    />
+                  </div>
+                </div>
+
+                <div className="input-row">
+                  <div className="form-group">
+                    <label htmlFor="designation">Designation</label>
+                    <input 
+                      type="text" 
+                      id="designation" 
+                      name="designation"
+                      value={formData.designation}
+                      onChange={handleInputChange}
+                      placeholder="e.g. Senior Software Engineer"
+                      className="input-field"
+                    />
+                  </div>
+
+                  <div className="form-group">
+                    <label htmlFor="department">Department</label>
+                    <input 
+                      type="text" 
+                      id="department" 
+                      name="department"
+                      value={formData.department}
+                      onChange={handleInputChange}
+                      placeholder="e.g. Engineering"
+                      className="input-field"
+                    />
+                  </div>
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="awardCitation">Citation / Reason Text</label>
+                  <textarea 
+                    id="awardCitation" 
+                    name="awardCitation"
+                    value={formData.awardCitation}
+                    onChange={handleInputChange}
+                    placeholder="In recognition of outstanding performance..."
+                    className="input-field"
+                    rows={3}
+                    style={{ resize: 'vertical', fontSize: '0.8rem' }}
+                  />
+                </div>
+
+                <div className="input-row">
+                  <div className="form-group">
+                    <label htmlFor="secondarySignatoryName">2nd Signatory (Director)</label>
+                    <input 
+                      type="text" 
+                      id="secondarySignatoryName" 
+                      name="secondarySignatoryName"
+                      value={formData.secondarySignatoryName || ''}
+                      onChange={handleInputChange}
+                      placeholder="Managing Director"
+                      className="input-field"
+                    />
+                  </div>
+
+                  <div className="form-group">
+                    <label htmlFor="issueDate">Issue Date</label>
+                    <input 
+                      type="date" 
+                      id="issueDate" 
+                      name="issueDate"
+                      value={formData.issueDate}
+                      onChange={handleInputChange}
+                      className="input-field"
+                    />
+                  </div>
+                </div>
+              </div>
+            )}
+
             {/* Section 2: Position & Offer Details */}
-            {!isQuotation && !isIncrement && !isNDA && !isTermination && (
+            {!isQuotation && !isIncrement && !isNDA && !isTermination && !isAward && (
               <div>
                 <div style={{
                   display: 'flex',
@@ -1532,7 +1694,7 @@ function App() {
             )}
 
             {/* Section 3: Manager & Reference - Letter only */}
-            {!isQuotation && !isPayslip && (
+            {!isQuotation && !isPayslip && !isAward && (
               <div>
                 <div style={{
                   display: 'flex',
@@ -1645,6 +1807,10 @@ function App() {
               <div className="paper-page landscape cert-modern">
                 <CertTemplate formData={formData} />
               </div>
+            ) : isAward ? (
+              <div className="paper-page landscape cert-modern">
+                <AwardCertTemplate formData={formData} />
+              </div>
             ) : isPayslip ? (
               <div className="paper-page payslip">
                 <PayslipTemplate formData={formData} />
@@ -1689,6 +1855,10 @@ function App() {
             ) : isCertificate ? (
               <div id="printable-page-1" className="paper-page landscape cert-modern">
                 <CertTemplate formData={formData} />
+              </div>
+            ) : isAward ? (
+              <div id="printable-page-1" className="paper-page landscape cert-modern">
+                <AwardCertTemplate formData={formData} />
               </div>
             ) : isPayslip ? (
               <div id="printable-page-1" className="paper-page payslip">

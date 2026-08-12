@@ -85,6 +85,13 @@ export const DEFAULTS = {
     'Please confirm your acceptance of this offer in writing by {ppoAcceptDeadline}.',
     'This offer is non-transferable and is valid only for the candidate named above.'
   ].join('\n'),
+  // Increment Letter default parameters
+  previousCTC: '₹ 6,00,000/- Per Annum',
+  revisedCTC: '₹ 7,50,000/- Per Annum',
+  incrementPercentage: '25% Hike (₹ 1,50,000/- PA)',
+  incrementEffectiveDate: '2026-04-01',
+  incrementIntro: 'In recognition of your exceptional performance, dedication, and invaluable contributions to {companyName}, management is pleased to announce a revision in your compensation package. We appreciate your hard work and commitment toward driving our organizational goals.',
+  incrementClosing: 'We look forward to your continued effort, leadership, and dedication toward scaling new heights with {companyName}. Congratulations once again!',
   // Quotation Default parameters
   quotationNo: 'A000029',
   quotationDate: '2026-07-29',

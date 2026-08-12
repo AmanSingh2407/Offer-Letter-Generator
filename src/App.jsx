@@ -9,11 +9,12 @@ import {
   Clock, 
   ShieldCheck, 
   Globe, 
-  FileSignature,
   MapPin,
   IndianRupee,
   Phone,
-  Award
+  Award,
+  TrendingUp,
+  Percent
 } from 'lucide-react';
 import html2canvas from 'html2canvas';
 import { jsPDF } from 'jspdf';
@@ -41,6 +42,7 @@ import { PPOTemplate } from './components/Templates/PPOTemplate';
 import { CertTemplate } from './components/Templates/CertTemplate';
 import { PayslipTemplate } from './components/Templates/PayslipTemplate';
 import { QuotationPages } from './components/Templates/QuotationPages';
+import { IncrementTemplate } from './components/Templates/IncrementTemplate';
 
 function App() {
   const [formData, setFormData] = useState(DEFAULTS);
@@ -127,7 +129,7 @@ function App() {
   const generateUniqueRefNumber = () => {
     const randomDigits = Math.floor(1000 + Math.random() * 9000);
     const year = new Date().getFullYear();
-    const prefix = formData.letterType === 'PPO Letter' ? 'PPO' : 'OL';
+    const prefix = formData.letterType === 'PPO Letter' ? 'PPO' : formData.letterType === 'Increment Letter' ? 'INC' : 'OL';
     const newRef = `MMSS/HR/${prefix}/${year}/${randomDigits}`;
     setFormData(prev => ({ ...prev, refNumber: newRef }));
     showToast(`⚡ Generated fresh Ref No: ${newRef}`, 'success');
@@ -213,6 +215,7 @@ function App() {
       const isPay = data.letterType === 'Salary Slip';
       const isPPO = data.letterType === 'PPO Letter';
       const isCert = data.letterType === 'Internship Certificate';
+      const isInc = data.letterType === 'Increment Letter';
 
       const payload = {
         candidateName: isQuot ? (data.quotationForClient || '') : (data.candidateName || ''),
@@ -220,7 +223,7 @@ function App() {
         department: isQuot ? 'IT & Web Solutions' : (data.department || ''),
         letterType: data.letterType || 'Offer Letter',
         issueDate: isQuot ? (data.quotationDate || '') : (data.issueDate || ''),
-        startDate: isQuot ? (data.validTillDate || '') : isPPO ? (data.ppoJoiningDate || '') : (data.startDate || ''),
+        startDate: isQuot ? (data.validTillDate || '') : isPPO ? (data.ppoJoiningDate || '') : isInc ? (data.incrementEffectiveDate || '') : (data.startDate || ''),
         companyName: isQuot ? (data.quotationFromCompany || '') : (data.companyName || ''),
         refNumber: isCert ? 'N/A' : isQuot ? (data.quotationNo || 'N/A') : isPay ? `PAY-${data.employeeId || ''}-${data.payPeriod || ''}` : (data.refNumber || 'N/A'),
         certificateNo: isCert ? (data.certificateId || 'N/A') : 'N/A',
@@ -268,7 +271,19 @@ function App() {
         updated.signatureText = value;
       }
       if (name === 'letterType') {
-        if (value === 'PPO Letter') {
+        if (value === 'Increment Letter') {
+          updated.candidateName = 'Aman Singh';
+          updated.employeeId = '43521';
+          updated.designation = 'Software Engineer';
+          updated.department = 'Engineering';
+          updated.previousCTC = '₹ 6,00,000/- Per Annum';
+          updated.revisedCTC = '₹ 7,50,000/- Per Annum';
+          updated.incrementPercentage = '25% Hike (₹ 1,50,000/- PA)';
+          updated.incrementEffectiveDate = '2026-04-01';
+          updated.refNumber = 'MMSS/HR/INC/2026/1024';
+          updated.signatoryName = 'Aman Singh';
+          updated.signatoryDesignation = 'HR Manager';
+        } else if (value === 'PPO Letter') {
           updated.candidateName = 'Aman Singh';
           updated.designation = 'Software Engineer';
           updated.department = 'Engineering';
@@ -356,6 +371,8 @@ function App() {
     const isQuotation = formData.letterType === 'Quotation';
     const isCertificate = formData.letterType === 'Internship Certificate';
     const isPayslip = formData.letterType === 'Salary Slip';
+    const isIncrement = formData.letterType === 'Increment Letter';
+    const isPPO = formData.letterType === 'PPO Letter';
 
     const nameToCheck = isQuotation ? formData.quotationForClient : formData.candidateName;
     if (!nameToCheck || !nameToCheck.trim()) {
@@ -408,6 +425,7 @@ function App() {
         logToSheets(formData, pdfBase64, filename);
         return;
       }
+
       const page1Element = document.getElementById('printable-page-1');
       if (!page1Element) throw new Error('Printable page 1 not found');
 
@@ -424,7 +442,7 @@ function App() {
       const imgData1 = canvas1.toDataURL('image/png');
 
       let imgData2 = null;
-      if (!isCertificate && !isPayslip) {
+      if (!isCertificate && !isPayslip && !isIncrement && !isPPO) {
         const page2Element = document.getElementById('printable-page-2');
         if (page2Element) {
           const canvas2 = await html2canvas(page2Element, {
@@ -454,13 +472,13 @@ function App() {
       pdf.addImage(imgData1, 'PNG', 0, 0, imgWidth, imgHeight, undefined, 'FAST');
       
       // Add Page 2
-      if (!isCertificate && !isPayslip && imgData2) {
+      if (!isCertificate && !isPayslip && !isIncrement && !isPPO && imgData2) {
         pdf.addPage();
         pdf.addImage(imgData2, 'PNG', 0, 0, imgWidth, imgHeight, undefined, 'FAST');
       }
 
       const cleanName = formData.candidateName.trim().replace(/[^a-zA-Z0-9]/g, '_');
-      const docPrefix = isCertificate ? 'Certificate' : isPayslip ? 'Payslip' : 'Letter';
+      const docPrefix = isCertificate ? 'Certificate' : isPayslip ? 'Payslip' : isIncrement ? 'IncrementLetter' : isPPO ? 'PPO' : 'Letter';
       const filename = `${docPrefix}_MindManthan_${cleanName}.pdf`;
       const pdfBase64 = pdf.output('datauristring');
       pdf.save(filename);
@@ -499,6 +517,7 @@ function App() {
   const isPayslip = formData.letterType === 'Salary Slip';
   const isQuotation = formData.letterType === 'Quotation';
   const isPPO = formData.letterType === 'PPO Letter';
+  const isIncrement = formData.letterType === 'Increment Letter';
 
   const isRefDuplicate = formData.refNumber && registeredRecords.some(r => r.trim().toLowerCase() === formData.refNumber.trim().toLowerCase());
   const isCertDuplicate = formData.certificateId && registeredRecords.some(r => r.trim().toLowerCase() === formData.certificateId.trim().toLowerCase());
@@ -548,6 +567,7 @@ function App() {
               >
                 <option value="Offer Letter">Offer Letter</option>
                 <option value="Joining Letter">Joining Letter</option>
+                <option value="Increment Letter">Increment Letter (Salary Revision)</option>
                 <option value="PPO Letter">PPO Letter (Pre-Placement Offer)</option>
                 <option value="Internship Certificate">Internship Certificate</option>
                 <option value="Salary Slip">Salary Slip (Payslip)</option>
@@ -568,7 +588,7 @@ function App() {
                 borderBottom: '1px solid var(--border-color)',
                 paddingBottom: '0.25rem'
               }}>
-                <User size={16} /> {isQuotation ? 'Client Information' : 'Candidate Details'}
+                <User size={16} /> {isQuotation ? 'Client Information' : 'Candidate / Employee Details'}
               </div>
 
               {isQuotation ? (
@@ -602,7 +622,7 @@ function App() {
               ) : (
                 <>
                   <div className="form-group">
-                    <label htmlFor="candidateName">Candidate Full Name</label>
+                    <label htmlFor="candidateName">Employee / Candidate Full Name</label>
                     <input 
                       type="text" 
                       id="candidateName" 
@@ -613,6 +633,21 @@ function App() {
                       className="input-field"
                     />
                   </div>
+
+                  {isIncrement && (
+                    <div className="form-group">
+                      <label htmlFor="employeeId">Employee ID</label>
+                      <input 
+                        type="text" 
+                        id="employeeId" 
+                        name="employeeId"
+                        value={formData.employeeId}
+                        onChange={handleInputChange}
+                        placeholder="e.g. 43521"
+                        className="input-field"
+                      />
+                    </div>
+                  )}
 
                   {!isCertificate && !isPayslip && (
                     <div className="form-group">
@@ -664,7 +699,7 @@ function App() {
             </div>
 
             {/* Section 2: Position & Offer Details */}
-            {!isQuotation && (
+            {!isQuotation && !isIncrement && (
               <div>
                 <div style={{
                   display: 'flex',
@@ -677,7 +712,7 @@ function App() {
                   borderBottom: '1px solid var(--border-color)',
                   paddingBottom: '0.25rem'
                 }}>
-                  <Briefcase size={16} /> Job & Role Details
+                  <Briefcase size={16} /> Job &amp; Role Details
                 </div>
 
                 <div className="input-row">
@@ -811,6 +846,143 @@ function App() {
                     </div>
                   </>
                 )}
+              </div>
+            )}
+
+            {/* Section 2.4: Increment Letter Inputs */}
+            {isIncrement && (
+              <div>
+                <div style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.5rem',
+                  fontSize: '0.9rem',
+                  fontWeight: '700',
+                  marginBottom: '0.75rem',
+                  color: 'var(--primary-500)',
+                  borderBottom: '1px solid var(--border-color)',
+                  paddingBottom: '0.25rem'
+                }}>
+                  <TrendingUp size={16} /> Salary Revision Details
+                </div>
+
+                <div className="input-row">
+                  <div className="form-group">
+                    <label htmlFor="designation">Designation</label>
+                    <input 
+                      type="text" 
+                      id="designation" 
+                      name="designation"
+                      value={formData.designation}
+                      onChange={handleInputChange}
+                      placeholder="e.g. Software Engineer"
+                      className="input-field"
+                    />
+                  </div>
+
+                  <div className="form-group">
+                    <label htmlFor="department">Department</label>
+                    <input 
+                      type="text" 
+                      id="department" 
+                      name="department"
+                      value={formData.department}
+                      onChange={handleInputChange}
+                      placeholder="e.g. Engineering"
+                      className="input-field"
+                    />
+                  </div>
+                </div>
+
+                <div className="input-row">
+                  <div className="form-group">
+                    <label htmlFor="previousCTC">Previous CTC</label>
+                    <input 
+                      type="text" 
+                      id="previousCTC" 
+                      name="previousCTC"
+                      value={formData.previousCTC}
+                      onChange={handleInputChange}
+                      placeholder="₹ 6,00,000/- Per Annum"
+                      className="input-field"
+                    />
+                  </div>
+
+                  <div className="form-group">
+                    <label htmlFor="revisedCTC">Revised CTC</label>
+                    <input 
+                      type="text" 
+                      id="revisedCTC" 
+                      name="revisedCTC"
+                      value={formData.revisedCTC}
+                      onChange={handleInputChange}
+                      placeholder="₹ 7,50,000/- Per Annum"
+                      className="input-field"
+                    />
+                  </div>
+                </div>
+
+                <div className="input-row">
+                  <div className="form-group">
+                    <label htmlFor="incrementPercentage">Hike / Increase</label>
+                    <input 
+                      type="text" 
+                      id="incrementPercentage" 
+                      name="incrementPercentage"
+                      value={formData.incrementPercentage}
+                      onChange={handleInputChange}
+                      placeholder="25% Hike"
+                      className="input-field"
+                    />
+                  </div>
+
+                  <div className="form-group">
+                    <label htmlFor="incrementEffectiveDate">Effective Date</label>
+                    <input 
+                      type="date" 
+                      id="incrementEffectiveDate" 
+                      name="incrementEffectiveDate"
+                      value={formData.incrementEffectiveDate}
+                      onChange={handleInputChange}
+                      className="input-field"
+                    />
+                  </div>
+                </div>
+
+                <div className="input-row">
+                  <div className="form-group">
+                    <label htmlFor="issueDate">Issue Date</label>
+                    <input 
+                      type="date" 
+                      id="issueDate" 
+                      name="issueDate"
+                      value={formData.issueDate}
+                      onChange={handleInputChange}
+                      className="input-field"
+                    />
+                  </div>
+
+                  <div className="form-group">
+                    <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center' }}>
+                      <label htmlFor="refNumber">Ref Number</label>
+                      <UniquenessAlert 
+                        fieldName="Ref Number"
+                        isDuplicate={isRefDuplicate}
+                        value={formData.refNumber}
+                        onGenerateUnique={generateUniqueRefNumber}
+                      />
+                    </div>
+                    <input 
+                      type="text" 
+                      id="refNumber" 
+                      name="refNumber"
+                      value={formData.refNumber}
+                      onChange={handleInputChange}
+                      placeholder="MMSS/HR/INC/2026/1024"
+                      className="input-field"
+                    />
+                  </div>
+                </div>
               </div>
             )}
 
@@ -997,10 +1169,10 @@ function App() {
                   borderBottom: '1px solid var(--border-color)',
                   paddingBottom: '0.25rem'
                 }}>
-                  <ShieldCheck size={16} /> Reference & Signatory
+                  <ShieldCheck size={16} /> Reference &amp; Signatory
                 </div>
 
-                {!isCertificate && (
+                {!isCertificate && !isIncrement && (
                   <div className="input-row">
                     <div className="form-group">
                       <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center' }}>
@@ -1101,6 +1273,10 @@ function App() {
               <div className="paper-page payslip">
                 <PayslipTemplate formData={formData} />
               </div>
+            ) : isIncrement ? (
+              <div className="paper-page">
+                <IncrementTemplate formData={formData} />
+              </div>
             ) : isPPO ? (
               <div className="paper-page ppo">
                 <PPOTemplate formData={formData} />
@@ -1128,6 +1304,10 @@ function App() {
             ) : isPayslip ? (
               <div id="printable-page-1" className="paper-page payslip">
                 <PayslipTemplate formData={formData} />
+              </div>
+            ) : isIncrement ? (
+              <div id="printable-page-1" className="paper-page">
+                <IncrementTemplate formData={formData} />
               </div>
             ) : isPPO ? (
               <div id="printable-page-1" className="paper-page ppo">

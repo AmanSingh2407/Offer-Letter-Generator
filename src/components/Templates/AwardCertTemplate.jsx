@@ -230,12 +230,13 @@ export const AwardCertTemplate = ({ formData }) => {
 
       </div>
 
-      {/* Bottom Ribbon Contact Strip */}
+      {/* Bottom Ribbon Contact Strip (Cleanly fitted within border lines) */}
       <div style={{
         backgroundColor: '#1e3a8a',
         color: '#ffffff',
-        margin: '-24px -24px -24px -24px',
-        padding: '6px 24px',
+        margin: '12px -8px -8px -8px',
+        padding: '6px 16px',
+        borderRadius: '0 0 4px 4px',
         display: 'flex',
         justify: 'space-between',
         alignItems: 'center',

@@ -1,8 +1,8 @@
 @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@500;600;700&family=Great+Vibes&display=swap');
 
-/* ==========================================================================
+/* 
    5. Salary Slip (Payslip) Generator Styles
-   ========================================================================== */
+   */
 .paper-page.payslip {
   padding: 45px;
   background: #ffffff;
@@ -1678,9 +1678,9 @@ h1, h2, h3, h4, h5, h6 {
   }
 }
 
-/* ==========================================================================
+/* 
    6. Quotation Generator Styles
-   ========================================================================== */
+    */
 .paper-page.quotation {
   padding: 40px 45px;
   background: #ffffff;

@@ -115,6 +115,14 @@ export const DEFAULTS = {
   terminationReason: 'End of Fixed-Term Contract',
   terminationIntro: 'This letter serves as formal notification that your employment with {companyName} as {designation} will terminate effective on {terminationLastDay}. We appreciate your contributions during your tenure with us and wish to ensure a smooth transition process.',
   terminationClosing: 'We thank you for your service with {companyName} and wish you success in your future professional endeavors.',
+  // Disciplinary Letter default parameters
+  discType: 'First Written Warning',
+  discSubject: 'Unexcused Absences & Policy Misconduct',
+  discIncidentDates: 'August 05 - August 10, 2026',
+  discIntro: 'This letter serves as a formal {discType} issued by {companyName} regarding observed workplace misconduct, policy non-compliance, or performance concerns outlined below.',
+  discViolationDetails: 'It has been observed that you have failed to adhere to official workplace guidelines, working hours, or project standards despite prior verbal counseling.',
+  discActionRequired: 'You are required to immediately rectify your attendance, performance, and professional conduct in full alignment with company policies.',
+  discConsequences: 'Failure to demonstrate immediate and sustained improvement may result in strict escalation up to and including suspension or termination of employment.',
   // Employee Award Certificate default parameters
   awardType: 'EMPLOYEE OF THE MONTH',
   awardPeriod: 'August 2026',

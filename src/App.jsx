@@ -17,7 +17,8 @@ import {
   Lock,
   UserX,
   Trophy,
-  Star
+  Star,
+  AlertTriangle
 } from 'lucide-react';
 import html2canvas from 'html2canvas';
 import { jsPDF } from 'jspdf';
@@ -50,6 +51,7 @@ import { NDAPage1Template } from './components/Templates/NDAPage1Template';
 import { NDAPage2Template } from './components/Templates/NDAPage2Template';
 import { TerminationTemplate } from './components/Templates/TerminationTemplate';
 import { AwardCertTemplate } from './components/Templates/AwardCertTemplate';
+import { DisciplinaryTemplate } from './components/Templates/DisciplinaryTemplate';
 
 function App() {
   const [formData, setFormData] = useState(DEFAULTS);
@@ -136,7 +138,7 @@ function App() {
   const generateUniqueRefNumber = () => {
     const randomDigits = Math.floor(1000 + Math.random() * 9000);
     const year = new Date().getFullYear();
-    const prefix = formData.letterType === 'PPO Letter' ? 'PPO' : formData.letterType === 'Increment Letter' ? 'INC' : formData.letterType === 'NDA Agreement' ? 'NDA' : formData.letterType === 'Termination Letter' ? 'TRM' : 'OL';
+    const prefix = formData.letterType === 'PPO Letter' ? 'PPO' : formData.letterType === 'Increment Letter' ? 'INC' : formData.letterType === 'NDA Agreement' ? 'NDA' : formData.letterType === 'Termination Letter' ? 'TRM' : formData.letterType === 'Disciplinary Letter' ? 'DISC' : 'OL';
     const dept = formData.letterType === 'NDA Agreement' ? 'LEGAL' : 'HR';
     const newRef = `MMSS/${dept}/${prefix}/${year}/${randomDigits}`;
     setFormData(prev => ({ ...prev, refNumber: newRef }));
@@ -294,14 +296,15 @@ function App() {
       const isInc = data.letterType === 'Increment Letter';
       const isNDA = data.letterType === 'NDA Agreement';
       const isTrm = data.letterType === 'Termination Letter';
+      const isDisc = data.letterType === 'Disciplinary Letter';
 
       const payload = {
         candidateName: isQuot ? (data.quotationForClient || '') : (data.candidateName || ''),
-        designation: isQuot ? (data.quotationProjectTitle || '') : isPPO ? (data.ppoFullTimeRole || data.designation) : isNDA ? `NDA (${data.ndaPartyType || 'Legal'})` : isTrm ? `${data.designation} (Terminated)` : isAward ? `${data.awardType || 'Award'} (${data.awardPeriod || ''})` : (data.designation || ''),
+        designation: isQuot ? (data.quotationProjectTitle || '') : isPPO ? (data.ppoFullTimeRole || data.designation) : isNDA ? `NDA (${data.ndaPartyType || 'Legal'})` : isTrm ? `${data.designation} (Terminated)` : isAward ? `${data.awardType || 'Award'} (${data.awardPeriod || ''})` : isDisc ? `${data.designation} (${data.discType || 'Warning'})` : (data.designation || ''),
         department: isQuot ? 'IT & Web Solutions' : isNDA ? 'Legal & Compliance' : (data.department || ''),
         letterType: data.letterType || 'Offer Letter',
         issueDate: isQuot ? (data.quotationDate || '') : (data.issueDate || ''),
-        startDate: isQuot ? (data.validTillDate || '') : isPPO ? (data.ppoJoiningDate || '') : isInc ? (data.incrementEffectiveDate || '') : isNDA ? (data.ndaEffectiveDate || '') : isTrm ? (data.terminationLastDay || '') : isAward ? (data.awardPeriod || '') : (data.startDate || ''),
+        startDate: isQuot ? (data.validTillDate || '') : isPPO ? (data.ppoJoiningDate || '') : isInc ? (data.incrementEffectiveDate || '') : isNDA ? (data.ndaEffectiveDate || '') : isTrm ? (data.terminationLastDay || '') : isAward ? (data.awardPeriod || '') : isDisc ? (data.discIncidentDates || '') : (data.startDate || ''),
         companyName: isQuot ? (data.quotationFromCompany || '') : (data.companyName || ''),
         refNumber: (isCert || isAward) ? 'N/A' : isQuot ? (data.quotationNo || 'N/A') : isPay ? `PAY-${data.employeeId || ''}-${data.payPeriod || ''}` : (data.refNumber || 'N/A'),
         certificateNo: (isCert || isAward) ? (data.certificateId || 'N/A') : 'N/A',
@@ -349,7 +352,21 @@ function App() {
         updated.signatureText = value;
       }
       if (name === 'letterType') {
-        if (value === 'Employee Award Certificate') {
+        if (value === 'Disciplinary Letter') {
+          updated.candidateName = 'Aman Singh';
+          updated.employeeId = '43521';
+          updated.designation = 'Software Engineer';
+          updated.department = 'Engineering';
+          updated.discType = 'First Written Warning';
+          updated.discSubject = 'Unexcused Absences & Policy Misconduct';
+          updated.discIncidentDates = 'August 05 - August 10, 2026';
+          updated.discViolationDetails = 'It has been observed that you have failed to adhere to official workplace guidelines, working hours, or project standards despite prior verbal counseling.';
+          updated.discActionRequired = 'You are required to immediately rectify your attendance, performance, and professional conduct in full alignment with company policies.';
+          updated.discConsequences = 'Failure to demonstrate immediate and sustained improvement may result in strict escalation up to and including suspension or termination of employment.';
+          updated.refNumber = `MMSS/HR/DISC/2026/${Math.floor(1000 + Math.random() * 9000)}`;
+          updated.signatoryName = 'Aman Singh';
+          updated.signatoryDesignation = 'HR Manager';
+        } else if (value === 'Employee Award Certificate') {
           updated.candidateName = 'Aman Singh';
           updated.designation = 'Senior Software Engineer';
           updated.department = 'Engineering';
@@ -487,6 +504,7 @@ function App() {
     const isPPO = formData.letterType === 'PPO Letter';
     const isNDA = formData.letterType === 'NDA Agreement';
     const isTermination = formData.letterType === 'Termination Letter';
+    const isDisciplinary = formData.letterType === 'Disciplinary Letter';
     const isLandscape = isCertificate || isAward;
 
     const nameToCheck = isQuotation ? formData.quotationForClient : formData.candidateName;
@@ -557,7 +575,7 @@ function App() {
       const imgData1 = canvas1.toDataURL('image/png');
 
       let imgData2 = null;
-      if (!isLandscape && !isPayslip && !isIncrement && !isPPO && !isTermination) {
+      if (!isLandscape && !isPayslip && !isIncrement && !isPPO && !isTermination && !isDisciplinary) {
         const page2Element = document.getElementById('printable-page-2');
         if (page2Element) {
           const canvas2 = await html2canvas(page2Element, {
@@ -587,13 +605,13 @@ function App() {
       pdf.addImage(imgData1, 'PNG', 0, 0, imgWidth, imgHeight, undefined, 'FAST');
       
       // Add Page 2
-      if (!isLandscape && !isPayslip && !isIncrement && !isPPO && !isTermination && imgData2) {
+      if (!isLandscape && !isPayslip && !isIncrement && !isPPO && !isTermination && !isDisciplinary && imgData2) {
         pdf.addPage();
         pdf.addImage(imgData2, 'PNG', 0, 0, imgWidth, imgHeight, undefined, 'FAST');
       }
 
       const cleanName = formData.candidateName.trim().replace(/[^a-zA-Z0-9]/g, '_');
-      const docPrefix = isCertificate ? 'Certificate' : isAward ? 'AwardCertificate' : isPayslip ? 'Payslip' : isIncrement ? 'IncrementLetter' : isNDA ? 'NDA_Agreement' : isTermination ? 'TerminationLetter' : isPPO ? 'PPO' : 'Letter';
+      const docPrefix = isCertificate ? 'Certificate' : isAward ? 'AwardCertificate' : isPayslip ? 'Payslip' : isIncrement ? 'IncrementLetter' : isNDA ? 'NDA_Agreement' : isTermination ? 'TerminationLetter' : isDisciplinary ? 'DisciplinaryWarning' : isPPO ? 'PPO' : 'Letter';
       const filename = `${docPrefix}_MindManthan_${cleanName}.pdf`;
       const pdfBase64 = pdf.output('datauristring');
       pdf.save(filename);
@@ -636,6 +654,7 @@ function App() {
   const isIncrement = formData.letterType === 'Increment Letter';
   const isNDA = formData.letterType === 'NDA Agreement';
   const isTermination = formData.letterType === 'Termination Letter';
+  const isDisciplinary = formData.letterType === 'Disciplinary Letter';
 
   const isRefDuplicate = formData.refNumber && registeredRecords.some(r => r.trim().toLowerCase() === formData.refNumber.trim().toLowerCase());
   const isCertDuplicate = formData.certificateId && registeredRecords.some(r => r.trim().toLowerCase() === formData.certificateId.trim().toLowerCase());
@@ -686,6 +705,7 @@ function App() {
                 <option value="Offer Letter">Offer Letter</option>
                 <option value="Joining Letter">Joining Letter</option>
                 <option value="Increment Letter">Increment Letter (Salary Revision)</option>
+                <option value="Disciplinary Letter">Disciplinary Letter (Warning / Show Cause)</option>
                 <option value="Employee Award Certificate">Employee Award Certificate (Month/Year)</option>
                 <option value="Termination Letter">Termination Letter (Notice of Separation)</option>
                 <option value="NDA Agreement">NDA Agreement (Non-Disclosure)</option>
@@ -755,7 +775,7 @@ function App() {
                     />
                   </div>
 
-                  {(isIncrement || isTermination || isAward) && (
+                  {(isIncrement || isTermination || isAward || isDisciplinary) && (
                     <div className="form-group">
                       <label htmlFor="employeeId">Employee ID</label>
                       <input 
@@ -819,7 +839,177 @@ function App() {
               )}
             </div>
 
-            {/* Section 2.1: Award Certificate Inputs */}
+            {/* Section 2.1: Disciplinary Letter Inputs */}
+            {isDisciplinary && (
+              <div>
+                <div style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.5rem',
+                  fontSize: '0.9rem',
+                  fontWeight: '700',
+                  marginBottom: '0.75rem',
+                  color: '#b91c1c',
+                  borderBottom: '1px solid var(--border-color)',
+                  paddingBottom: '0.25rem'
+                }}>
+                  <AlertTriangle size={16} /> Disciplinary Warning Details
+                </div>
+
+                <div className="input-row">
+                  <div className="form-group">
+                    <label htmlFor="discType">Notice Type</label>
+                    <select 
+                      id="discType" 
+                      name="discType"
+                      value={formData.discType}
+                      onChange={handleInputChange}
+                      className="input-field"
+                      style={{ fontWeight: 600 }}
+                    >
+                      <option value="First Written Warning">First Written Warning</option>
+                      <option value="Second Written Warning">Second Written Warning</option>
+                      <option value="Final Written Warning">Final Written Warning</option>
+                      <option value="Show Cause Notice">Show Cause Notice</option>
+                      <option value="Performance & Conduct Notice">Performance &amp; Conduct Notice</option>
+                    </select>
+                  </div>
+
+                  <div className="form-group">
+                    <label htmlFor="discSubject">Incident / Violation Subject</label>
+                    <input 
+                      type="text" 
+                      id="discSubject" 
+                      name="discSubject"
+                      value={formData.discSubject}
+                      onChange={handleInputChange}
+                      placeholder="e.g. Unexcused Absences / Misconduct"
+                      className="input-field"
+                    />
+                  </div>
+                </div>
+
+                <div className="input-row">
+                  <div className="form-group">
+                    <label htmlFor="designation">Designation</label>
+                    <input 
+                      type="text" 
+                      id="designation" 
+                      name="designation"
+                      value={formData.designation}
+                      onChange={handleInputChange}
+                      placeholder="e.g. Software Engineer"
+                      className="input-field"
+                    />
+                  </div>
+
+                  <div className="form-group">
+                    <label htmlFor="department">Department</label>
+                    <input 
+                      type="text" 
+                      id="department" 
+                      name="department"
+                      value={formData.department}
+                      onChange={handleInputChange}
+                      placeholder="e.g. Engineering"
+                      className="input-field"
+                    />
+                  </div>
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="discIncidentDates">Incident Date(s) / Period</label>
+                  <input 
+                    type="text" 
+                    id="discIncidentDates" 
+                    name="discIncidentDates"
+                    value={formData.discIncidentDates}
+                    onChange={handleInputChange}
+                    placeholder="e.g. August 05 - August 10, 2026"
+                    className="input-field"
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="discViolationDetails">Details of Violation / Misconduct</label>
+                  <textarea 
+                    id="discViolationDetails" 
+                    name="discViolationDetails"
+                    value={formData.discViolationDetails}
+                    onChange={handleInputChange}
+                    placeholder="Details of breach..."
+                    className="input-field"
+                    rows={3}
+                    style={{ resize: 'vertical', fontSize: '0.8rem' }}
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="discActionRequired">Corrective Action Required</label>
+                  <textarea 
+                    id="discActionRequired" 
+                    name="discActionRequired"
+                    value={formData.discActionRequired}
+                    onChange={handleInputChange}
+                    placeholder="Required actions..."
+                    className="input-field"
+                    rows={2}
+                    style={{ resize: 'vertical', fontSize: '0.8rem' }}
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="discConsequences">Consequences of Non-Compliance</label>
+                  <textarea 
+                    id="discConsequences" 
+                    name="discConsequences"
+                    value={formData.discConsequences}
+                    onChange={handleInputChange}
+                    placeholder="Failure to improve may lead to..."
+                    className="input-field"
+                    rows={2}
+                    style={{ resize: 'vertical', fontSize: '0.8rem' }}
+                  />
+                </div>
+
+                <div className="input-row">
+                  <div className="form-group">
+                    <label htmlFor="issueDate">Issue Date</label>
+                    <input 
+                      type="date" 
+                      id="issueDate" 
+                      name="issueDate"
+                      value={formData.issueDate}
+                      onChange={handleInputChange}
+                      className="input-field"
+                    />
+                  </div>
+
+                  <div className="form-group">
+                    <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center' }}>
+                      <label htmlFor="refNumber">Notice Ref No</label>
+                      <UniquenessAlert 
+                        fieldName="Notice Ref"
+                        isDuplicate={isRefDuplicate}
+                        value={formData.refNumber}
+                        onGenerateUnique={generateUniqueRefNumber}
+                      />
+                    </div>
+                    <input 
+                      type="text" 
+                      id="refNumber" 
+                      name="refNumber"
+                      value={formData.refNumber}
+                      onChange={handleInputChange}
+                      placeholder="MMSS/HR/DISC/2026/0491"
+                      className="input-field"
+                    />
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Section 2.2: Award Certificate Inputs */}
             {isAward && (
               <div>
                 <div style={{
@@ -962,7 +1152,7 @@ function App() {
             )}
 
             {/* Section 2: Position & Offer Details */}
-            {!isQuotation && !isIncrement && !isNDA && !isTermination && !isAward && (
+            {!isQuotation && !isIncrement && !isNDA && !isTermination && !isAward && !isDisciplinary && (
               <div>
                 <div style={{
                   display: 'flex',
@@ -1112,7 +1302,7 @@ function App() {
               </div>
             )}
 
-            {/* Section 2.2: Termination Letter Inputs */}
+            {/* Section 2.3: Termination Letter Inputs */}
             {isTermination && (
               <div>
                 <div style={{
@@ -1240,7 +1430,7 @@ function App() {
               </div>
             )}
 
-            {/* Section 2.3: NDA Specific Form Fields */}
+            {/* Section 2.4: NDA Specific Form Fields */}
             {isNDA && (
               <div>
                 <div style={{
@@ -1444,7 +1634,7 @@ function App() {
               </div>
             )}
 
-            {/* Section 2.4: Increment Letter Inputs */}
+            {/* Section 2.5: Increment Letter Inputs */}
             {isIncrement && (
               <div>
                 <div style={{
@@ -1581,7 +1771,7 @@ function App() {
               </div>
             )}
 
-            {/* Section 2.5: Certificate Settings */}
+            {/* Section 2.6: Certificate Settings */}
             {isCertificate && (
               <div>
                 <div style={{
@@ -1662,7 +1852,7 @@ function App() {
               </div>
             )}
 
-            {/* Section 2.6: Quotation Specific Form Fields */}
+            {/* Section 2.7: Quotation Specific Form Fields */}
             {isQuotation && (
               <div>
                 <div style={{
@@ -1868,7 +2058,7 @@ function App() {
                   <ShieldCheck size={16} /> Reference &amp; Signatory
                 </div>
 
-                {!isCertificate && !isIncrement && !isNDA && !isTermination && (
+                {!isCertificate && !isIncrement && !isNDA && !isTermination && !isDisciplinary && (
                   <div className="input-row">
                     <div className="form-group">
                       <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center' }}>
@@ -1981,6 +2171,10 @@ function App() {
               <div className="paper-page">
                 <TerminationTemplate formData={formData} />
               </div>
+            ) : isDisciplinary ? (
+              <div className="paper-page">
+                <DisciplinaryTemplate formData={formData} />
+              </div>
             ) : isNDA ? (
               <>
                 <div className="paper-page">
@@ -2029,6 +2223,10 @@ function App() {
             ) : isTermination ? (
               <div id="printable-page-1" className="paper-page">
                 <TerminationTemplate formData={formData} />
+              </div>
+            ) : isDisciplinary ? (
+              <div id="printable-page-1" className="paper-page">
+                <DisciplinaryTemplate formData={formData} />
               </div>
             ) : isNDA ? (
               <>

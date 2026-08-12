@@ -186,14 +186,13 @@ const DEFAULTS = {
 • Website Settings & Google Analytics`
 };
 
-const DEFAULT_SHEETS_URL = 'https://script.google.com/macros/s/AKfycbw3ugfSNJqd26i5oI2jpk_n6pp61uibF-vTeYs4Fa8Pn168eEKs3x6ui7yOLShwtx8/exec';
+const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbw3ugfSNJqd26i5oI2jpk_n6pp61uibF-vTeYs4Fa8Pn168eEKs3x6ui7yOLShwtx8/exec';
 
 function App() {
   const [formData, setFormData] = useState(DEFAULTS);
   const [theme, setTheme] = useState('light');
   const [isGenerating, setIsGenerating] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
-  const [sheetsUrl, setSheetsUrl] = useState(() => localStorage.getItem('mm_sheets_url') || DEFAULT_SHEETS_URL);
   const [toast, setToast] = useState(null); // { message, type: 'success'|'error' }
 
   // Quick Quotation Helper States
@@ -241,10 +240,9 @@ function App() {
     }
   });
 
-  // Sync registered records with Google Sheets if webhook URL is configured
+  // Sync registered records with Google Sheets
   useEffect(() => {
-    if (!sheetsUrl || !sheetsUrl.startsWith('https://')) return;
-    fetch(sheetsUrl)
+    fetch(SHEETS_URL)
       .then(res => res.json())
       .then(data => {
         if (data && (data.registeredRefs || data.registeredCerts)) {
@@ -259,7 +257,7 @@ function App() {
         }
       })
       .catch(err => console.log('Google Sheets sync check:', err));
-  }, [sheetsUrl]);
+  }, []);
 
   // Mark a number as registered/used
   const markNumberAsRegistered = (numStr) => {
@@ -371,12 +369,6 @@ function App() {
 
   // Log to Google Sheets & Google Drive via Apps Script webhook
   const logToSheets = async (data, pdfBase64 = '', filename = '') => {
-    const targetUrl = sheetsUrl || DEFAULT_SHEETS_URL;
-    if (!targetUrl || !targetUrl.startsWith('https://')) {
-      showToast('⚠️ Paste your Google Sheets Webhook URL in sidebar to auto-save to Sheet!', 'error');
-      return;
-    }
-
     try {
       const isQuot = data.letterType === 'Quotation';
       const isPay = data.letterType === 'Salary Slip';
@@ -398,7 +390,7 @@ function App() {
         pdfBase64: pdfBase64
       };
 
-      await fetch(targetUrl, {
+      await fetch(SHEETS_URL, {
         method: 'POST',
         mode: 'no-cors',
         headers: { 'Content-Type': 'application/json' },

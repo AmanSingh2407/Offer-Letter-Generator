@@ -18,21 +18,24 @@ export const getGenderPronouns = (gender) => {
       subject: 'she',
       object: 'her',
       possessive: 'her',
-      title: 'Ms.'
+      title: 'Ms.',
+      relation: 'daughter of'
     };
   } else if (g === 'other') {
     return {
       subject: 'they',
       object: 'them',
       possessive: 'their',
-      title: 'Mx.'
+      title: 'Mx.',
+      relation: 'child of'
     };
   } else {
     return {
       subject: 'he',
       object: 'him',
       possessive: 'his',
-      title: 'Mr.'
+      title: 'Mr.',
+      relation: 'son of'
     };
   }
 };
@@ -129,8 +132,12 @@ export const replacePlaceholders = (text, formData) => {
   const pronouns = getGenderPronouns(formData.candidateGender);
   return text
     .replace(/{candidateName}/g, capitalizeName(formData.candidateName))
+    .replace(/{parentName}/g, capitalizeName(formData.parentName))
+    .replace(/{relation}/g, pronouns.relation)
     .replace(/{designation}/g, formData.designation)
     .replace(/{companyName}/g, formData.companyName)
+    .replace(/{companyEmail}/g, formData.companyEmail)
+    .replace(/{companyMobile}/g, formData.companyMobile)
     .replace(/{department}/g, formData.department)
     .replace(/{startDate}/g, formatDateLong(formData.startDate))
     .replace(/{employmentType}/g, formData.employmentType)

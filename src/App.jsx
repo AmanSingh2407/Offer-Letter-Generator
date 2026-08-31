@@ -779,6 +779,21 @@ function App() {
                     />
                   </div>
 
+                  {isExperience && (
+                    <div className="form-group">
+                      <label htmlFor="parentName">Parent's Name (Father/Mother)</label>
+                      <input 
+                        type="text" 
+                        id="parentName" 
+                        name="parentName"
+                        value={formData.parentName || ''}
+                        onChange={handleInputChange}
+                        placeholder="e.g. Suresh Kumar"
+                        className="input-field"
+                      />
+                    </div>
+                  )}
+
                   {(isIncrement || isTermination || isAward || isDisciplinary || isExperience) && (
                     <div className="form-group">
                       <label htmlFor="employeeId">Employee ID</label>

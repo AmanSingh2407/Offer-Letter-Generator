@@ -1,5 +1,5 @@
 import React from 'react';
-import { MapPin, Globe, Mail, Phone } from 'lucide-react';
+import { MapPin, Globe, Mail, Phone, Lightbulb, Shield, Users, Award } from 'lucide-react';
 import { formatDateLong, replacePlaceholders } from '../../utils/formatters';
 import companyLogo from '../../assets/logo.png';
 
@@ -78,7 +78,7 @@ export const ExperienceTemplate = ({ formData }) => {
       </div>
 
       {/* Signature Section */}
-      <div className="signature-section" style={{ marginTop: 'auto', paddingTop: '1rem' }}>
+      <div className="signature-section" style={{ marginTop: 'auto', paddingTop: '1rem', marginBottom: '1rem' }}>
         <div className="signature-block">
           <div className="signature-line" style={{ width: '180px' }}></div>
           <div>Employee Signature</div>
@@ -107,11 +107,50 @@ export const ExperienceTemplate = ({ formData }) => {
         </div>
       </div>
 
-      {/* Letterhead Footer */}
-      <div className="letter-footer" style={{ marginTop: '1.25rem' }}>
-        <div>{formData.companyName} &copy; {new Date().getFullYear()}</div>
-        <div>{formData.companyWebsite}</div>
-        <div>Page 1 of 1</div>
+      {/* Values Footer Badges */}
+      <div className="values-footer-modern" style={{ marginBottom: '0.5rem', flexShrink: 0 }}>
+        <div className="value-badge-modern">
+          <div className="value-icon-circle">
+            <Lightbulb size={10} />
+          </div>
+          <div className="value-text-block">
+            <div className="value-title">INNOVATION</div>
+            <div className="value-desc">We embrace new ideas.</div>
+          </div>
+        </div>
+        <div className="value-badge-modern">
+          <div className="value-icon-circle">
+            <Shield size={10} />
+          </div>
+          <div className="value-text-block">
+            <div className="value-title">INTEGRITY</div>
+            <div className="value-desc">We do the right thing.</div>
+          </div>
+        </div>
+        <div className="value-badge-modern">
+          <div className="value-icon-circle">
+            <Users size={10} />
+          </div>
+          <div className="value-text-block">
+            <div className="value-title">COLLABORATION</div>
+            <div className="value-desc">We achieve more together.</div>
+          </div>
+        </div>
+        <div className="value-badge-modern">
+          <div className="value-icon-circle">
+            <Award size={10} />
+          </div>
+          <div className="value-text-block">
+            <div className="value-title">EXCELLENCE</div>
+            <div className="value-desc">We deliver the best.</div>
+          </div>
+        </div>
+      </div>
+
+      {/* Bottom Thank You strip */}
+      <div className="thankyou-strip-modern" style={{ flexShrink: 0 }}>
+        <div className="thankyou-strip-accent"></div>
+        <span>Thank you for your valuable contributions. We wish you all the best in your future endeavors!</span>
       </div>
     </>
   );

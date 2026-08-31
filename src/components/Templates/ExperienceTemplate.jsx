@@ -77,7 +77,6 @@ export const ExperienceTemplate = ({ formData }) => {
 
       {/* Letter Body */}
       <div className="letter-body" style={{ flexGrow: 1, lineHeight: '1.45', fontSize: '0.88rem', textAlign: 'justify', marginBottom: '1.25rem' }}>
-        <p style={{ fontWeight: '600', marginBottom: '0.75rem', color: '#1e293b' }}>To Whom It May Concern,</p>
         <p style={{ whiteSpace: 'pre-wrap', margin: 0 }}>
           {resolvedBody}
         </p>

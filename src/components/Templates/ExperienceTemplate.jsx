@@ -1,4 +1,5 @@
 import React from 'react';
+import { MapPin, Globe, Mail, Phone } from 'lucide-react';
 import { formatDateLong, replacePlaceholders } from '../../utils/formatters';
 import companyLogo from '../../assets/logo.png';
 
@@ -16,19 +17,41 @@ export const ExperienceTemplate = ({ formData }) => {
 
   return (
     <>
-      {/* Letterhead Header */}
-      <div className="letterhead-header">
-        <img 
-          src={companyLogo} 
-          className="company-logo" 
-          alt={formData.companyName} 
-          crossOrigin="anonymous"
-        />
-        <div className="company-details">
-          <div className="company-name">{formData.companyName}</div>
-          <div>{formData.companyAddress}</div>
-          <div>Mobile: {formData.companyMobile} | Website: {formData.companyWebsite}</div>
-          <div>Email: info@mindmanthansoftwaresolutions.com</div>
+      {/* Modern Slanted Header */}
+      <div className="letterhead-header-modern">
+        <div className="header-brand-bg"></div>
+        <div className="header-divider-bg"></div>
+        
+        <div className="header-brand-content">
+          <img 
+            src={companyLogo} 
+            className="company-logo-modern" 
+            alt={formData.companyName} 
+            crossOrigin="anonymous"
+          />
+          <div className="company-brand-text">
+            <div className="company-name-modern">{formData.companyName}</div>
+            <div className="company-tagline-modern">{formData.companyTagline}</div>
+          </div>
+        </div>
+        
+        <div className="header-contact-content">
+          <div className="contact-item">
+            <MapPin size={10} className="contact-icon" />
+            <span>{formData.companyAddress}</span>
+          </div>
+          <div className="contact-item">
+            <Globe size={10} className="contact-icon" />
+            <span>{formData.companyWebsite}</span>
+          </div>
+          <div className="contact-item">
+            <Mail size={10} className="contact-icon" />
+            <span>{formData.companyEmail || 'info@mindmanthansoftwaresolutions.com'}</span>
+          </div>
+          <div className="contact-item">
+            <Phone size={10} className="contact-icon" />
+            <span>{formData.companyMobile}</span>
+          </div>
         </div>
       </div>
 

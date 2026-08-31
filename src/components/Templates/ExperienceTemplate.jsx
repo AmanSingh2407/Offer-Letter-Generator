@@ -56,12 +56,12 @@ export const ExperienceTemplate = ({ formData }) => {
       </div>
 
       {/* Document Title */}
-      <div className="letter-title" style={{ marginTop: '2.5rem', marginBottom: '2rem' }}>
+      <div className="letter-title" style={{ marginTop: '1.25rem', marginBottom: '1.25rem' }}>
         TO WHOM IT MAY CONCERN
       </div>
 
       {/* Metadata */}
-      <div className="letter-meta" style={{ marginBottom: '2rem' }}>
+      <div className="letter-meta" style={{ marginBottom: '1.25rem' }}>
         <div className="letter-meta-block">
           <strong>Ref No:</strong> {formData.refNumber}
         </div>
@@ -71,14 +71,14 @@ export const ExperienceTemplate = ({ formData }) => {
       </div>
 
       {/* Letter Body */}
-      <div className="letter-body" style={{ flexGrow: 1, lineHeight: '1.8', fontSize: '0.95rem', textAlign: 'justify', marginBottom: '3rem' }}>
-        <p style={{ whiteSpace: 'pre-wrap' }}>
+      <div className="letter-body" style={{ flexGrow: 1, lineHeight: '1.45', fontSize: '0.88rem', textAlign: 'justify', marginBottom: '1.5rem' }}>
+        <p style={{ whiteSpace: 'pre-wrap', margin: 0 }}>
           {resolvedBody}
         </p>
       </div>
 
       {/* Signature Section */}
-      <div className="signature-section" style={{ marginTop: 'auto', paddingTop: '2rem' }}>
+      <div className="signature-section" style={{ marginTop: 'auto', paddingTop: '1rem' }}>
         <div className="signature-block">
           <div className="signature-line" style={{ width: '180px' }}></div>
           <div>Employee Signature</div>
@@ -89,7 +89,7 @@ export const ExperienceTemplate = ({ formData }) => {
             <div 
               style={{ 
                 fontFamily: "'Caveat', cursive", 
-                fontSize: '2rem', 
+                fontSize: '1.75rem', 
                 color: '#2563eb',
                 lineHeight: '1',
                 marginBottom: '0.2rem',
@@ -108,7 +108,7 @@ export const ExperienceTemplate = ({ formData }) => {
       </div>
 
       {/* Letterhead Footer */}
-      <div className="letter-footer" style={{ marginTop: '2rem' }}>
+      <div className="letter-footer" style={{ marginTop: '1.25rem' }}>
         <div>{formData.companyName} &copy; {new Date().getFullYear()}</div>
         <div>{formData.companyWebsite}</div>
         <div>Page 1 of 1</div>

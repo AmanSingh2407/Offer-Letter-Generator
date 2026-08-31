@@ -56,12 +56,17 @@ export const ExperienceTemplate = ({ formData }) => {
       </div>
 
       {/* Document Title */}
-      <div className="letter-title" style={{ marginTop: '1.25rem', marginBottom: '1.25rem' }}>
-        TO WHOM IT MAY CONCERN
+      <div className="letter-title-modern-container" style={{ marginTop: '1rem', marginBottom: '1rem' }}>
+        <div className="letter-title-modern">EXPERIENCE LETTER</div>
+        <div className="title-separator-modern">
+          <div className="separator-dot"></div>
+          <div className="separator-line"></div>
+          <div className="separator-dot"></div>
+        </div>
       </div>
 
       {/* Metadata */}
-      <div className="letter-meta" style={{ marginBottom: '1.25rem' }}>
+      <div className="letter-meta" style={{ marginBottom: '1rem' }}>
         <div className="letter-meta-block">
           <strong>Ref No:</strong> {formData.refNumber}
         </div>
@@ -71,7 +76,8 @@ export const ExperienceTemplate = ({ formData }) => {
       </div>
 
       {/* Letter Body */}
-      <div className="letter-body" style={{ flexGrow: 1, lineHeight: '1.45', fontSize: '0.88rem', textAlign: 'justify', marginBottom: '1.5rem' }}>
+      <div className="letter-body" style={{ flexGrow: 1, lineHeight: '1.45', fontSize: '0.88rem', textAlign: 'justify', marginBottom: '1.25rem' }}>
+        <p style={{ fontWeight: '600', marginBottom: '0.75rem', color: '#1e293b' }}>To Whom It May Concern,</p>
         <p style={{ whiteSpace: 'pre-wrap', margin: 0 }}>
           {resolvedBody}
         </p>

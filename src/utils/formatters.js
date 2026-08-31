@@ -139,8 +139,13 @@ export const replacePlaceholders = (text, formData) => {
     .replace(/{certificateId}/g, formData.certificateId)
     .replace(/{internshipStartDate}/g, formatDateLong(formData.internshipStartDate))
     .replace(/{internshipEndDate}/g, formatDateLong(formData.internshipEndDate))
+    .replace(/{experienceStartDate}/g, formatDateLong(formData.experienceStartDate || formData.startDate))
+    .replace(/{experienceEndDate}/g, formatDateLong(formData.experienceEndDate || formData.issueDate))
     .replace(/{pronounSubject}/g, pronouns.subject)
     .replace(/{pronounObject}/g, pronouns.object)
     .replace(/{pronounPossessive}/g, pronouns.possessive)
+    .replace(/{pronounSubjectCap}/g, pronouns.subject.charAt(0).toUpperCase() + pronouns.subject.slice(1))
+    .replace(/{pronounObjectCap}/g, pronouns.object.charAt(0).toUpperCase() + pronouns.object.slice(1))
+    .replace(/{pronounPossessiveCap}/g, pronouns.possessive.charAt(0).toUpperCase() + pronouns.possessive.slice(1))
     .replace(/{titlePronoun}/g, pronouns.title);
 };

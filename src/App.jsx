@@ -52,6 +52,7 @@ import { NDAPage2Template } from './components/Templates/NDAPage2Template';
 import { TerminationTemplate } from './components/Templates/TerminationTemplate';
 import { AwardCertTemplate } from './components/Templates/AwardCertTemplate';
 import { DisciplinaryTemplate } from './components/Templates/DisciplinaryTemplate';
+import { ExperienceTemplate } from './components/Templates/ExperienceTemplate';
 
 function App() {
   const [formData, setFormData] = useState(DEFAULTS);
@@ -505,6 +506,7 @@ function App() {
     const isNDA = formData.letterType === 'NDA Agreement';
     const isTermination = formData.letterType === 'Termination Letter';
     const isDisciplinary = formData.letterType === 'Disciplinary Letter';
+    const isExperience = formData.letterType === 'Experience Letter';
     const isLandscape = isCertificate || isAward;
 
     const nameToCheck = isQuotation ? formData.quotationForClient : formData.candidateName;
@@ -575,7 +577,7 @@ function App() {
       const imgData1 = canvas1.toDataURL('image/png');
 
       let imgData2 = null;
-      if (!isLandscape && !isPayslip && !isIncrement && !isPPO && !isTermination && !isDisciplinary) {
+      if (!isLandscape && !isPayslip && !isIncrement && !isPPO && !isTermination && !isDisciplinary && !isExperience) {
         const page2Element = document.getElementById('printable-page-2');
         if (page2Element) {
           const canvas2 = await html2canvas(page2Element, {
@@ -605,13 +607,13 @@ function App() {
       pdf.addImage(imgData1, 'PNG', 0, 0, imgWidth, imgHeight, undefined, 'FAST');
       
       // Add Page 2
-      if (!isLandscape && !isPayslip && !isIncrement && !isPPO && !isTermination && !isDisciplinary && imgData2) {
+      if (!isLandscape && !isPayslip && !isIncrement && !isPPO && !isTermination && !isDisciplinary && !isExperience && imgData2) {
         pdf.addPage();
         pdf.addImage(imgData2, 'PNG', 0, 0, imgWidth, imgHeight, undefined, 'FAST');
       }
 
       const cleanName = formData.candidateName.trim().replace(/[^a-zA-Z0-9]/g, '_');
-      const docPrefix = isCertificate ? 'Certificate' : isAward ? 'AwardCertificate' : isPayslip ? 'Payslip' : isIncrement ? 'IncrementLetter' : isNDA ? 'NDA_Agreement' : isTermination ? 'TerminationLetter' : isDisciplinary ? 'DisciplinaryWarning' : isPPO ? 'PPO' : 'Letter';
+      const docPrefix = isCertificate ? 'Certificate' : isAward ? 'AwardCertificate' : isPayslip ? 'Payslip' : isIncrement ? 'IncrementLetter' : isNDA ? 'NDA_Agreement' : isTermination ? 'TerminationLetter' : isDisciplinary ? 'DisciplinaryWarning' : isPPO ? 'PPO' : isExperience ? 'ExperienceLetter' : 'Letter';
       const filename = `${docPrefix}_MindManthan_${cleanName}.pdf`;
       const pdfBase64 = pdf.output('datauristring');
       pdf.save(filename);
@@ -655,6 +657,7 @@ function App() {
   const isNDA = formData.letterType === 'NDA Agreement';
   const isTermination = formData.letterType === 'Termination Letter';
   const isDisciplinary = formData.letterType === 'Disciplinary Letter';
+  const isExperience = formData.letterType === 'Experience Letter';
 
   const isRefDuplicate = formData.refNumber && registeredRecords.some(r => r.trim().toLowerCase() === formData.refNumber.trim().toLowerCase());
   const isCertDuplicate = formData.certificateId && registeredRecords.some(r => r.trim().toLowerCase() === formData.certificateId.trim().toLowerCase());
@@ -713,6 +716,7 @@ function App() {
                 <option value="Internship Certificate">Internship Certificate</option>
                 <option value="Salary Slip">Salary Slip (Payslip)</option>
                 <option value="Quotation">Quotation (Commercial Offer)</option>
+                <option value="Experience Letter">Experience Letter</option>
               </select>
             </div>
 
@@ -775,7 +779,7 @@ function App() {
                     />
                   </div>
 
-                  {(isIncrement || isTermination || isAward || isDisciplinary) && (
+                  {(isIncrement || isTermination || isAward || isDisciplinary || isExperience) && (
                     <div className="form-group">
                       <label htmlFor="employeeId">Employee ID</label>
                       <input 
@@ -1152,7 +1156,7 @@ function App() {
             )}
 
             {/* Section 2: Position & Offer Details */}
-            {!isQuotation && !isIncrement && !isNDA && !isTermination && !isAward && !isDisciplinary && (
+            {!isQuotation && !isIncrement && !isNDA && !isTermination && !isAward && !isDisciplinary && !isExperience && (
               <div>
                 <div style={{
                   display: 'flex',
@@ -1426,6 +1430,131 @@ function App() {
                       className="input-field"
                     />
                   </div>
+                </div>
+              </div>
+            )}
+
+            {/* Section 2.3.5: Experience Letter Inputs */}
+            {isExperience && (
+              <div>
+                <div style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.5rem',
+                  fontSize: '0.9rem',
+                  fontWeight: '700',
+                  marginBottom: '0.75rem',
+                  color: 'var(--primary-500)',
+                  borderBottom: '1px solid var(--border-color)',
+                  paddingBottom: '0.25rem'
+                }}>
+                  <Briefcase size={16} /> Work Experience &amp; Relieving Details
+                </div>
+
+                <div className="input-row">
+                  <div className="form-group">
+                    <label htmlFor="designation">Designation</label>
+                    <input 
+                      type="text" 
+                      id="designation" 
+                      name="designation"
+                      value={formData.designation}
+                      onChange={handleInputChange}
+                      placeholder="e.g. Software Engineer"
+                      className="input-field"
+                    />
+                  </div>
+
+                  <div className="form-group">
+                    <label htmlFor="department">Department</label>
+                    <input 
+                      type="text" 
+                      id="department" 
+                      name="department"
+                      value={formData.department}
+                      onChange={handleInputChange}
+                      placeholder="e.g. Engineering"
+                      className="input-field"
+                    />
+                  </div>
+                </div>
+
+                <div className="input-row">
+                  <div className="form-group">
+                    <label htmlFor="experienceStartDate">Experience Start Date</label>
+                    <input 
+                      type="date" 
+                      id="experienceStartDate" 
+                      name="experienceStartDate"
+                      value={formData.experienceStartDate}
+                      onChange={handleInputChange}
+                      className="input-field"
+                    />
+                  </div>
+
+                  <div className="form-group">
+                    <label htmlFor="experienceEndDate">Experience End Date</label>
+                    <input 
+                      type="date" 
+                      id="experienceEndDate" 
+                      name="experienceEndDate"
+                      value={formData.experienceEndDate}
+                      onChange={handleInputChange}
+                      className="input-field"
+                    />
+                  </div>
+                </div>
+
+                <div className="input-row">
+                  <div className="form-group">
+                    <label htmlFor="issueDate">Issue Date</label>
+                    <input 
+                      type="date" 
+                      id="issueDate" 
+                      name="issueDate"
+                      value={formData.issueDate}
+                      onChange={handleInputChange}
+                      className="input-field"
+                    />
+                  </div>
+
+                  <div className="form-group">
+                    <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center' }}>
+                      <label htmlFor="refNumber">Ref Number</label>
+                      <UniquenessAlert 
+                        fieldName="Ref Number"
+                        isDuplicate={isRefDuplicate}
+                        value={formData.refNumber}
+                        onGenerateUnique={generateUniqueRefNumber}
+                      />
+                    </div>
+                    <input 
+                      type="text" 
+                      id="refNumber" 
+                      name="refNumber"
+                      value={formData.refNumber}
+                      onChange={handleInputChange}
+                      placeholder="e.g. MMSS/HR/EXP/2026/0482"
+                      className="input-field"
+                    />
+                  </div>
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="experienceBody">Experience Details &amp; Body Text</label>
+                  <textarea 
+                    id="experienceBody" 
+                    name="experienceBody"
+                    value={formData.experienceBody}
+                    onChange={handleInputChange}
+                    placeholder="Enter experience letter description..."
+                    className="input-field"
+                    rows={8}
+                    style={{ resize: 'vertical', minHeight: '140px', fontSize: '0.85rem', lineHeight: '1.4' }}
+                  />
+                  <span style={{ fontSize: '0.72rem', color: 'var(--text-secondary)' }}>
+                    Variables supported: <code>{`{candidateName}`}</code>, <code>{`{designation}`}</code>, <code>{`{department}`}</code>, <code>{`{experienceStartDate}`}</code>, <code>{`{experienceEndDate}`}</code>, <code>{`{companyName}`}</code>, <code>{`{pronounSubject}`}</code>, <code>{`{pronounObject}`}</code>, <code>{`{pronounPossessive}`}</code>, <code>{`{pronounSubjectCap}`}</code>, <code>{`{pronounPossessiveCap}`}</code>
+                  </span>
                 </div>
               </div>
             )}
@@ -2058,7 +2187,7 @@ function App() {
                   <ShieldCheck size={16} /> Reference &amp; Signatory
                 </div>
 
-                {!isCertificate && !isIncrement && !isNDA && !isTermination && !isDisciplinary && (
+                {!isCertificate && !isIncrement && !isNDA && !isTermination && !isDisciplinary && !isExperience && (
                   <div className="input-row">
                     <div className="form-group">
                       <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center' }}>
@@ -2188,6 +2317,10 @@ function App() {
               <div className="paper-page ppo">
                 <PPOTemplate formData={formData} />
               </div>
+            ) : isExperience ? (
+              <div className="paper-page">
+                <ExperienceTemplate formData={formData} />
+              </div>
             ) : (
               <>
                 <div className="paper-page">
@@ -2240,6 +2373,10 @@ function App() {
             ) : isPPO ? (
               <div id="printable-page-1" className="paper-page ppo">
                 <PPOTemplate formData={formData} />
+              </div>
+            ) : isExperience ? (
+              <div id="printable-page-1" className="paper-page">
+                <ExperienceTemplate formData={formData} />
               </div>
             ) : (
               <>

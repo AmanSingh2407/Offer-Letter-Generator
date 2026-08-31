@@ -197,7 +197,11 @@ export const DEFAULTS = {
 • Category & Product Management
 • Banner & Blog Management
 • CMS & Email Configuration
-• Website Settings & Google Analytics`
+• Website Settings & Google Analytics`,
+  // Experience Letter default parameters
+  experienceStartDate: '2024-06-01',
+  experienceEndDate: '2026-08-31',
+  experienceBody: 'This is to certify that {titlePronoun} {candidateName} was employed with {companyName} as a {designation} in the {department} department from {experienceStartDate} to {experienceEndDate}.\n\nDuring {pronounPossessive} association with us, we found {pronounObject} to be extremely industrious, honest, and dedicated to {pronounPossessive} duties. {pronounSubjectCap} possesses strong technical knowledge, an excellent work ethic, and always displayed great professional conduct.\n\nWe would like to thank {pronounObject} for {pronounPossessive} contributions during {pronounPossessive} tenure, and we wish {pronounObject} all the success in {pronounPossessive} future professional endeavors.'
 };
 
 export const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbw3ugfSNJqd26i5oI2jpk_n6pp61uibF-vTeYs4Fa8Pn168eEKs3x6ui7yOLShwtx8/exec';

@@ -1466,6 +1466,19 @@ function App() {
                   <Briefcase size={16} /> Work Experience &amp; Relieving Details
                 </div>
 
+                <div className="form-group">
+                  <label htmlFor="experienceSalutation">Salutation / Greeting</label>
+                  <input 
+                    type="text" 
+                    id="experienceSalutation" 
+                    name="experienceSalutation"
+                    value={formData.experienceSalutation || ''}
+                    onChange={handleInputChange}
+                    placeholder="e.g. To Whom It May Concern,"
+                    className="input-field"
+                  />
+                </div>
+
                 <div className="input-row">
                   <div className="form-group">
                     <label htmlFor="designation">Designation</label>
